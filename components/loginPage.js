@@ -1,15 +1,13 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsLoggedIn, setEmail, setPassword, setLoading, setError } from './customAuthSilce';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { auth } from '../firebase';
+import {auth } from '../firebaseConfig';
 import {signInWithEmailAndPassword } from 'firebase/auth';
 import { getIdToken } from 'firebase/auth';
-//import { getIdToken } from 'firebase/auth';
 
 const LoginPage = ({ navigation }) => {
-    const email = useSelector((state) => state.customAuth.email);
+  const email = useSelector((state) => state.customAuth.email);
   const password = useSelector((state) => state.customAuth.password);
   const loading = useSelector((state) => state.customAuth.isLoading);
   const error = useSelector((state) => state.customAuth.error); 
@@ -17,16 +15,18 @@ const LoginPage = ({ navigation }) => {
   const { isLoggedIn } = useSelector(state => state.customAuth);
 
   const handleSubmit = async () => {
-
     dispatch(setLoading(true));
-    console.log('logged in');
-   dispatch(setIsLoggedIn(true))
+    
+    dispatch(setIsLoggedIn(true));
     try {
-      await signInWithEmailAndPassword(auth, email, password);
         
+      await signInWithEmailAndPassword(auth, email, password);
+      
       const user = auth.currentUser;
+   
       if (user) {
-        const token = await getIdToken(user);        
+        const token = await getIdToken(user); 
+        navigation.navigate('deshbord');       
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -34,6 +34,7 @@ const LoginPage = ({ navigation }) => {
       dispatch(setError(error.message));
     } finally {
       dispatch(setLoading(false));
+
     }
   };
 
@@ -49,8 +50,15 @@ const LoginPage = ({ navigation }) => {
               <Text style={styles.inputIcon}>
                 <Icon name="key" size={30} color="black" />
               </Text>
-              <TextInput style={styles.input} placeholder="email" value={email}
-                onChange={(e) => dispatch(setEmail(e.target.value))}/>
+              <TextInput
+  style={styles.input}
+  placeholder="email"
+  value={email}
+  onChangeText={(value) => {
+    
+    dispatch(setEmail(value))}}
+/>
+
             </View>
           </View>
           <View style={styles.formGroup}>
@@ -59,12 +67,14 @@ const LoginPage = ({ navigation }) => {
                 <Icon name="key" size={30} color="black" />
               </Text>
               <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => dispatch(setPassword(e.target.value))}
-                secureTextEntry={true}
-              />
+  style={styles.input}
+  placeholder="Password"
+  value={password}
+  onChangeText={(value) => {
+    
+    dispatch(setPassword(value))}}
+  secureTextEntry={true}
+/>
             </View>
           </View>
 

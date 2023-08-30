@@ -9,6 +9,7 @@ import LoginPage from './components/loginPage';
 import customAuthReducer from './components/customAuthSilce';
 import signUpSlice from './components/signUnSlice';
 import SignUpForm from './components/SignUp'
+import DeshBord from './components/Deshbord';
 
 
 
@@ -31,8 +32,9 @@ export default function MainApp() {
       <NavigationContainer>
       <Stack.Navigator>
   <Stack.Screen name="Home" component={Home} />
-  <Stack.Screen name="Login" component={LoginPage} />
-  <Stack.Screen name="Signup" component={SignUpForm} />
+  <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }}/>
+  <Stack.Screen name="Signup" component={SignUpForm} options={{ headerShown: false }}/>
+  <Stack.Screen name="deshbord" component={DeshBord} options={{ headerShown: false }}/>
 
 </Stack.Navigator>
        </NavigationContainer>

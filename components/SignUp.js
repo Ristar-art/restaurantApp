@@ -34,7 +34,8 @@ const SignUpForm = ({ navigation }) => {
       dispatch(setLastName(formData.lastName));
       dispatch(setEmail(formData.email));
       dispatch(setPassword(formData.password));
-
+   
+      navigation.navigate('Login');
       
     } catch (error) {
       console.error('Error during registration:', error);
