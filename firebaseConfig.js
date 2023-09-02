@@ -1,11 +1,13 @@
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
+import { getFirestore,collection, addDoc } from "firebase/firestore";
 import {
   initializeAuth,
   getAuth,
   onAuthStateChanged,
   createUserWithEmailAndPassword
 } from 'firebase/auth';
+
 
 const firebaseConfig = {
     apiKey: 'AIzaSyC_u-KagLgoEhJv1sU0frmZc3Ro9kOBhFQ',
@@ -17,9 +19,9 @@ const firebaseConfig = {
     measurementId: 'G-KHF96RZTK4',
 };
 
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
-const auth = getAuth(app);
+initializeApp(firebaseConfig);
+const storage = getStorage();
+const auth = getAuth();
 
 
-export { app, storage, auth, onAuthStateChanged,createUserWithEmailAndPassword };
+export { storage, auth, onAuthStateChanged,createUserWithEmailAndPassword };

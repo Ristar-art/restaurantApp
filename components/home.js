@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Text, View, StyleSheet, Button, Image  } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { initializeApp } from 'firebase/app';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { setIsLoggedIn, setIsLoading } from '../authSlice';
 import BackgroundImage from './BackgroundImage';
@@ -30,6 +29,7 @@ export default function Home({ navigation }) {
     'https://www.blessthismessplease.com/wp-content/uploads/2017/02/DSC_8887-2.jpg',
     'https://hips.hearstapps.com/hmg-prod/images/california-grilled-chicken-index-647a382d5880c.jpg?crop=0.502xw:1.00xh;0.260xw,0&resize=640:*',
     'https://assets.epicurious.com/photos/566af1a508cf542b399e1457/1:1/w_775%2Cc_limit/EP_12112015_garlicsoup.jpg',
+    
   ];
 
   return (
@@ -40,8 +40,8 @@ export default function Home({ navigation }) {
         <View style={styles.card}>
           <Text style={styles.cardText}>The last Supper</Text>
            <View style={styles.smallerText}>
-           <Text style={styles.cardExplanation}>Eat my fesh, and drink my blood</Text>
-          <Text style={styles.cardExplanation}>The words i speak to you, they are spirt and they are life.</Text>
+           <Text style={styles.cardExplanation}>Eat my flesh, and drink my blood.</Text>
+          <Text style={styles.cardExplanation}>The words that i speak to you, they are spirt and they are life.</Text>
            </View>
             <View style={styles.starsContainer}>
             <Icon name="star" size={10} color="gold" />
@@ -82,7 +82,7 @@ export default function Home({ navigation }) {
               <Icon name="globe" size={60} color="gold" />
               </View>
               <View style={styles.spaceBetween}>
-              <Icon name="star" size={60} color="gray" />
+              <Icon name="star" size={60} color="gray" onPress={() => navigation.navigate('admin') } />
               </View>
               <View style={styles.spaceBetween}>
               <Icon name="user" size={60} color="gray" onPress={() => navigation.navigate('Login') }/>

@@ -13,6 +13,7 @@ import DeshBord from './components/Deshbord';
 
 
 
+
 const Stack = createStackNavigator();
 
 
@@ -22,7 +23,7 @@ const store = configureStore({
     auth: authReducer,
     customAuth: customAuthReducer,
     signUp: signUpSlice
-  },
+  }, 
 });
 
 export default function MainApp() {
@@ -35,7 +36,9 @@ export default function MainApp() {
   <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }}/>
   <Stack.Screen name="Signup" component={SignUpForm} options={{ headerShown: false }}/>
   <Stack.Screen name="deshbord" component={DeshBord} options={{ headerShown: false }}/>
+  {/* <Stack.Screen name="admin" component={AdminPanel} options={{ headerShown: false }}/> */}
 
+ 
 </Stack.Navigator>
        </NavigationContainer>
     </Provider>

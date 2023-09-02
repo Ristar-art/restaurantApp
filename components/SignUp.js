@@ -3,8 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { setFirstName, setLastName, setEmail, setPassword, setLoading,setError } from './signUnSlice';
 import {getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-
-
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const SignUpForm = ({ navigation }) => {
