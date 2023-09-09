@@ -7,10 +7,7 @@ const BackgroundImage = () => {
          <ImageBackground
       source={{ uri: 'https://img.freepik.com/premium-photo/last-supper-painting-by-christian-art_888396-3076.jpg' }}
       style={styles.imageBackground}
-    >
-     {/* <View style={styles.overlay}>
-        <Text style={styles.welcomeText}>Welcome to the My Resrurant!</Text>
-      </View> */}
+    >   
     </ImageBackground>
  
    

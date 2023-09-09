@@ -6,6 +6,7 @@ import { setIsLoggedIn, setIsLoading } from '../authSlice';
 import BackgroundImage from './BackgroundImage';
 import { auth } from '../firebaseConfig';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Datepicker from './Datepicker';
 export default function Home({ navigation }) {
   const dispatch = useDispatch();
   const { isLoggedIn, isLoading } = useSelector(state => state.auth);
@@ -52,12 +53,14 @@ export default function Home({ navigation }) {
             <Text style={styles.cardExplanation}>6000</Text>
           </View>
           <Icon name="user" size={60} color="black" />
+          
+           
         </View>
         
       </View>
       <View style={styles.cardContainer2}>
         <View style={styles.card}>
-          
+           
             <View style={styles.starsContainer}>
                {images.map((image, index) => (
                 <Image

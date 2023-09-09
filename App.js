@@ -10,13 +10,11 @@ import customAuthReducer from './components/customAuthSilce';
 import signUpSlice from './components/signUnSlice';
 import SignUpForm from './components/SignUp'
 import DeshBord from './components/Deshbord';
-
-
-
+import RestaurantsDisplay from './components/RestaurantsDisplay'
+import AdminPanel from './components/adminPanel';
+import RestaurantView from './components/RestaurantView';
 
 const Stack = createStackNavigator();
-
-
 
 const store = configureStore({
   reducer: {
@@ -36,8 +34,9 @@ export default function MainApp() {
   <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }}/>
   <Stack.Screen name="Signup" component={SignUpForm} options={{ headerShown: false }}/>
   <Stack.Screen name="deshbord" component={DeshBord} options={{ headerShown: false }}/>
-  {/* <Stack.Screen name="admin" component={AdminPanel} options={{ headerShown: false }}/> */}
-
+  <Stack.Screen name="RestaurantsDisplay" component={RestaurantsDisplay} options={{ headerShown: false }} />
+  <Stack.Screen name="admin" component={AdminPanel} options={{ headerShown: false }}/>
+  <Stack.Screen name="restaurantview" component={RestaurantView} options={{ headerShown: false }}/>
  
 </Stack.Navigator>
        </NavigationContainer>

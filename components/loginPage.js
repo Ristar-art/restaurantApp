@@ -51,14 +51,12 @@ const LoginPage = ({ navigation }) => {
                 <Icon name="key" size={30} color="black" />
               </Text>
               <TextInput
-  style={styles.input}
-  placeholder="email"
-  value={email}
-  onChangeText={(value) => {
-    
-    dispatch(setEmail(value))}}
-/>
-
+               style={styles.input}
+               placeholder="email"
+               value={email}
+               onChangeText={(value) => {     
+               dispatch(setEmail(value))}}
+              />
             </View>
           </View>
           <View style={styles.formGroup}>
@@ -67,14 +65,13 @@ const LoginPage = ({ navigation }) => {
                 <Icon name="key" size={30} color="black" />
               </Text>
               <TextInput
-  style={styles.input}
-  placeholder="Password"
-  value={password}
-  onChangeText={(value) => {
-    
-    dispatch(setPassword(value))}}
-  secureTextEntry={true}
-/>
+               style={styles.input}
+               placeholder="Password"
+               value={password}
+               onChangeText={(value) => {    
+               dispatch(setPassword(value))}}
+               secureTextEntry={true}
+               />
             </View>
           </View>
 
