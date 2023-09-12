@@ -55,7 +55,7 @@ const AdminPanel = () => {
   
       // Automatically generate an ID for the document under subCollectionRef
       await addDoc(subCollectionRef, {
-        // You can add any fields here
+        address: 'maluti',
         name: subCollectionName,
       });
   

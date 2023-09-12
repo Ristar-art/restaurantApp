@@ -69,7 +69,7 @@ const RestaurantView = () => {
       const firestore = getFirestore();
       const docRef = doc(firestore, 'DATA', parentId, subCollectionName, selectedDocumentId);
       const docPath = docRef.path;
-      console.log('Document path to update:', docPath);
+   
 
       // Check if the document path exists without fetching data
       const docSnapshot = await getDoc(docRef);
@@ -110,7 +110,7 @@ const RestaurantView = () => {
       const firestore = getFirestore();
       const docRef = doc(firestore, 'DATA', parentId, subCollectionName, selectedDocumentId);
       const docPath = docRef.path;
-      console.log('Document path to edit:', docPath);
+   
 
       // Check if the document path exists without fetching data
       const docSnapshot = await getDoc(docRef);
@@ -162,13 +162,13 @@ const RestaurantView = () => {
         });
   
         console.log('New document created successfully with ID:', newDocRef.id);
-      //  const subcollectionRef = collection(newDocRef, subCollectionName);
+        const subcollectionRef = collection(newDocRef,  selectedAddress);
   
       // // // Automatically generate an ID for the document under subCollectionRef
-      //  await addDoc(subcollectionRef, {
+        await addDoc(subcollectionRef, {
       // //   // You can add any fields here
-      //    name: subCollectionName,
-      //  });
+          address: selectedAddress,
+        });
         await fetchDocuments();
   
         // Hide the address dropdown
