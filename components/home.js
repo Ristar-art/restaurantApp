@@ -6,7 +6,7 @@ import { setIsLoggedIn, setIsLoading } from '../authSlice';
 import BackgroundImage from './BackgroundImage';
 import { auth } from '../firebaseConfig';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Datepicker from './Datepicker';
+
 export default function Home({ navigation }) {
   const dispatch = useDispatch();
   const { isLoggedIn, isLoading } = useSelector(state => state.auth);

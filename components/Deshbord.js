@@ -22,10 +22,7 @@ export default function Dashboard() {
           const imageUrls = snapshot.docs.map((doc) => doc.data().imageurl);
           const nameOfAreas = snapshot.docs.map((doc) => doc.data().number);
           const collectionName = snapshot.docs.map((doc) => doc.data().subCollection);         
-          const restaurants = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            // other restaurant data...
-          }));
+          const restaurants = snapshot.docs.map((doc) => ({id: doc.id,}));
 
           setImages(imageUrls);
           setNameOfAreas(nameOfAreas);
