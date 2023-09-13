@@ -13,6 +13,7 @@ import DeshBord from './components/Deshbord';
 import RestaurantsDisplay from './components/RestaurantsDisplay'
 import AdminPanel from './components/adminPanel';
 import RestaurantView from './components/RestaurantView';
+import TableScreen from './components/Table';
 
 const Stack = createStackNavigator();
 
@@ -37,6 +38,7 @@ export default function MainApp() {
   <Stack.Screen name="RestaurantsDisplay" component={RestaurantsDisplay} options={{ headerShown: false }} />
   <Stack.Screen name="admin" component={AdminPanel} options={{ headerShown: false }}/>
   <Stack.Screen name="restaurantview" component={RestaurantView} options={{ headerShown: false }}/>
+  <Stack.Screen name="table" component={TableScreen} options={{ headerShown: false }}/>
  
 </Stack.Navigator>
        </NavigationContainer>

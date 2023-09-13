@@ -1,3 +1,4 @@
+// DocumentDetailsScreen.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList } from 'react-native';
 
@@ -9,7 +10,7 @@ import {
   doc,
   updateDoc,
   getDoc,
-  serverTimestamp,
+  
   setDoc,
   collection,
   addDoc,
@@ -21,22 +22,24 @@ import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native'; // Import navigation hooks
 
-
-const RestaurantView = () => {
+const TableScreen = ({ route }) => {
+  const { TableData } = route.params; // Get the document data passed from the previous screen
   const [documentData, setDocumentData] = useState([]);
-  const route = useRoute();
+ // const route = useRoute();
   const [newFieldName, setNewFieldName] = useState(''); // State to hold the new field name
   const [newFieldValue, setNewFieldValue] = useState(''); // State to hold the new field value
   const [selectedDocumentId, setSelectedDocumentId] = useState(null); // State to hold the selected document ID
   const [selectedFieldName, setSelectedFieldName] = useState(''); // State to hold the selected field name for editing
-  const subCollectionName = route.params?.item;
+  const subCollectionName =   TableData.subcollection 
   const parentId = route.params.parentId;
   const [showAddressDropdown, setShowAddressDropdown] = useState(false);
   const [showAddFieldDropdown,setShowAddFieldDropdown]= useState(false)
-  const [selectedAddress, setSelectedAddress] = useState(''); 
-  const [selectTable,setSelectTable]= useState('');
+  const [selectedAddress, setSelectedAddress] = useState(''); // State to hold the selected address
+   const [selectTable,setSelectTable]= useState('');
   const navigation = useNavigation();
-  console.log('parentId is: ', parentId);
+  console.log('TableData is: ', TableData);
+  console.log('subcollection is: ', subCollectionName);
+
 
   useEffect(() => {
     const firestore = getFirestore();
@@ -45,7 +48,7 @@ const RestaurantView = () => {
     const fetchDocuments = async () => {
       try {
         const querySnapshot = await getDocs(queryRef);
-
+         console.log('querySnapshot is: ',querySnapshot)
         if (!querySnapshot.empty) {
           const documents = querySnapshot.docs.map((doc) => ({
             id: doc.id,
@@ -62,90 +65,89 @@ const RestaurantView = () => {
 
     fetchDocuments();
   }, [subCollectionName]);
-  
   const handleAddFieldDropdown = async () => {
   setShowAddFieldDropdown(true)
   }
  
   const handleAddField = async () => {
-    if (!selectedDocumentId) {
-      console.error('No document selected for update.');
-      return;
-    }
+    // if (!selectedDocumentId) {
+    //   console.error('No document selected for update.');
+    //   return;
+    // }
 
-    try {
-      const firestore = getFirestore();
-      const docRef = doc(firestore, 'DATA', parentId, subCollectionName, selectedDocumentId);
-      const docPath = docRef.path;
+    // try {
+    //   const firestore = getFirestore();
+    //   const docRef = doc(firestore, 'DATA', parentId, subCollectionName, selectedDocumentId);
+    //   const docPath = docRef.path;
 
-      // Check if the document path exists without fetching data
-      const docSnapshot = await getDoc(docRef);
+    //   // Check if the document path exists without fetching data
+    //   const docSnapshot = await getDoc(docRef);
 
-      if (docSnapshot.exists()) {
-        // The document path exists, proceed with updates
-        console.log('The document exists.');
-        const fieldToUpdate = {};
-        fieldToUpdate[newFieldName] = newFieldValue;
-        console.log('newFieldName is: ', newFieldName, 'newFieldValue is: ', newFieldValue);
+    //   if (docSnapshot.exists()) {
+    //     // The document path exists, proceed with updates
+    //     console.log('The document exists.');
+    //     const fieldToUpdate = {};
+    //     fieldToUpdate[newFieldName] = newFieldValue;
+    //     console.log('newFieldName is: ', newFieldName, 'newFieldValue is: ', newFieldValue);
 
-        // Update the document with the dynamic field
-        await updateDoc(docRef, fieldToUpdate);
+    //     // Update the document with the dynamic field
+    //     await updateDoc(docRef, fieldToUpdate);
 
-        // Refresh the document list after updating
-        await fetchDocuments();
+    //     // Refresh the document list after updating
+    //     await fetchDocuments();
 
-        // Clear the input fields after adding the new field
-        setNewFieldName('');
-        setNewFieldValue('');
+    //     // Clear the input fields after adding the new field
+    //     setNewFieldName('');
+    //     setNewFieldValue('');
         
-        console.log('Field added successfully to the document.');
-        setShowAddFieldDropdown(false)
-      } else {
-        console.log('Document does not exist:', docPath);
-      }
-    } catch (error) {
-      console.error('Error adding field:', error);
-    }
+    //     console.log('Field added successfully to the document.');
+    //     setShowAddFieldDropdown(false)
+    //   } else {
+    //     console.log('Document does not exist:', docPath);
+    //   }
+    // } catch (error) {
+    //   console.error('Error adding field:', error);
+    // }
   };
 
   const handleEditField = async () => {
-    if (!selectedDocumentId || !selectedFieldName) {
-      console.error('No document or field selected for edit.');
-      return;
-    }
+    // if (!selectedDocumentId || !selectedFieldName) {
+    //   console.error('No document or field selected for edit.');
+    //   return;
+    // }
 
-    try {
-      const firestore = getFirestore();
-      const docRef = doc(firestore, 'DATA', parentId, subCollectionName, selectedDocumentId);
-      const docPath = docRef.path;
+    // try {
+    //   const firestore = getFirestore();
+    //   const docRef = doc(firestore, 'DATA', parentId, subCollectionName, selectedDocumentId);
+    //   const docPath = docRef.path;
 
-      // Check if the document path exists without fetching data
-      const docSnapshot = await getDoc(docRef);
+    //   // Check if the document path exists without fetching data
+    //   const docSnapshot = await getDoc(docRef);
 
-      if (docSnapshot.exists()) {
-        // The document path exists, proceed with updates
-        console.log('The document exists.');
-        const fieldToUpdate = {};
-        fieldToUpdate[selectedFieldName] = newFieldValue; // Update the field with the new value
-        console.log('Editing field:', selectedFieldName, 'with new value:', newFieldValue);
+    //   if (docSnapshot.exists()) {
+    //     // The document path exists, proceed with updates
+    //     console.log('The document exists.');
+    //     const fieldToUpdate = {};
+    //     fieldToUpdate[selectedFieldName] = newFieldValue; // Update the field with the new value
+    //     console.log('Editing field:', selectedFieldName, 'with new value:', newFieldValue);
 
-        // Update the document with the edited field
-        await updateDoc(docRef, fieldToUpdate);
+    //     // Update the document with the edited field
+    //     await updateDoc(docRef, fieldToUpdate);
 
-        // Refresh the document list after editing
-        await fetchDocuments();
+    //     // Refresh the document list after editing
+    //     await fetchDocuments();
 
-        // Clear the input fields after editing the field
-        setSelectedFieldName('');
-        setNewFieldValue('');
+    //     // Clear the input fields after editing the field
+    //     setSelectedFieldName('');
+    //     setNewFieldValue('');
 
-        console.log('Field edited successfully.');
-      } else {
-        console.log('Document does not exist:', docPath);
-      }
-    } catch (error) {
-      console.error('Error editing field:', error);
-    }
+    //     console.log('Field edited successfully.');
+    //   } else {
+    //     console.log('Document does not exist:', docPath);
+    //   }
+    // } catch (error) {
+    //   console.error('Error editing field:', error);
+    // }
   };
 
   const handleCreateNewDocument = async () => {
@@ -153,110 +155,90 @@ const RestaurantView = () => {
   };
  
   const handleAddressSelection = async () => {
-    try {
-      const firestore = getFirestore();
+    // try {
+    //   const firestore = getFirestore();
 
-      // Check if a valid address is selected
-      if (selectedAddress && selectTable) {
-        // Construct a reference to the sub-collection
-        const subCollectionRef = collection(firestore, 'DATA', parentId, subCollectionName);
+    //   // Check if a valid address is selected
+    //   if (selectedAddress) {
+    //     // Construct a reference to the sub-collection
+    //     const subCollectionRef = collection(firestore, 'DATA', parentId, subCollectionName);
 
-        // Add a new document to the sub-collection with an auto-generated ID and the selected address
-        const newDocRef = await addDoc(subCollectionRef, {
-          address: selectTable,
-          name: subCollectionName,
-          subcollection: selectedAddress
-        });
+    //     // Add a new document to the sub-collection with an auto-generated ID and the selected address
+    //     const newDocRef = await addDoc(subCollectionRef, {
+    //       address: selectedAddress,
+    //       name: subCollectionName,
+    //     });
 
-        console.log('New document created successfully with ID:', newDocRef.id);
-        const subcollectionRef = collection(newDocRef, selectedAddress);
+    //     console.log('New document created successfully with ID:', newDocRef.id);
+    //     const subcollectionRef = collection(newDocRef, selectedAddress);
 
-        // Automatically generate an ID for the document under subCollectionRef
-        await addDoc(subcollectionRef, {
-          // You can add any fields here
-          subcollection: selectTable,
-        });
-        await fetchDocuments();
+    //     // Automatically generate an ID for the document under subCollectionRef
+    //     await addDoc(subcollectionRef, {
+    //       // You can add any fields here
+    //       address: selectedAddress,
+    //     });
+    //     await fetchDocuments();
 
-        // Hide the address dropdown
-        setShowAddressDropdown(false);
-      } else {
-        console.error('Invalid address selected.');
-      }
-    } catch (error) {
-      console.error('Error creating a new document:', error);
-    }
+    //     // Hide the address dropdown
+    //     setShowAddressDropdown(false);
+    //   } else {
+    //     console.error('Invalid address selected.');
+    //   }
+    // } catch (error) {
+    //   console.error('Error creating a new document:', error);
+    // }
   };
 
-  const fetchDocuments = async () => {
-    try {
-      const firestore = getFirestore();
-      const queryRef = query(collectionGroup(firestore, subCollectionName));
-
-      const querySnapshot = await getDocs(queryRef);
-
-      if (!querySnapshot.empty) {
-        const documents = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          data: doc.data(),
-        }));
-        setDocumentData(documents);
-      } else {
-        console.log('No documents found in sub-collection:', subCollectionName);
-      }
-    } catch (error) {
-      console.error('Error fetching documents:', error);
-    }
-  };
+ 
 
   const handleDeleteDocument = async (documentId) => {
-    try {
-      const firestore = getFirestore();
-      const docRef = doc(firestore, 'DATA', parentId, subCollectionName, documentId);
+    // try {
+    //   const firestore = getFirestore();
+    //   const docRef = doc(firestore, 'DATA', parentId, subCollectionName, documentId);
 
-      // Delete the document
-      await deleteDoc(docRef);
+    //   // Delete the document
+    //   await deleteDoc(docRef);
 
-      console.log('Document deleted successfully:', documentId);
-      await fetchDocuments(); // Refresh the document list after deletion
-    } catch (error) {
-      console.error('Error deleting document:', error);
-    }
+    //   console.log('Document deleted successfully:', documentId);
+    //   await fetchDocuments(); // Refresh the document list after deletion
+    // } catch (error) {
+    //   console.error('Error deleting document:', error);
+    // }
   };
 
   const handleDeleteField = async (documentId, fieldNameToDelete) => {
-    if (!documentId) {
-      console.error('No document selected for field deletion.');
-      return;
-    }
+    // if (!documentId) {
+    //   console.error('No document selected for field deletion.');
+    //   return;
+    // }
 
-    try {
-      const firestore = getFirestore();
-      const docRef = doc(firestore, 'DATA', parentId, subCollectionName, documentId);
+    // try {
+    //   const firestore = getFirestore();
+    //   const docRef = doc(firestore, 'DATA', parentId, subCollectionName, documentId);
 
-      // Fetch the document to get its current data
-      const docSnapshot = await getDoc(docRef);
+    //   // Fetch the document to get its current data
+    //   const docSnapshot = await getDoc(docRef);
 
-      if (docSnapshot.exists()) {
-        const data = docSnapshot.data();
-        if (data && data[fieldNameToDelete] !== undefined) {
-          // Remove the field from the document
-          delete data[fieldNameToDelete];
+    //   if (docSnapshot.exists()) {
+    //     const data = docSnapshot.data();
+    //     if (data && data[fieldNameToDelete] !== undefined) {
+    //       // Remove the field from the document
+    //       delete data[fieldNameToDelete];
 
-          // Update the document with the modified data
-          await setDoc(docRef, data);
+    //       // Update the document with the modified data
+    //       await setDoc(docRef, data);
 
-          console.log(`Field "${fieldNameToDelete}" deleted successfully from document:`, documentId);
-          await fetchDocuments(); // Refresh the document list after field deletion
-        } else {
-          console.log(`Field "${fieldNameToDelete}" does not exist in document:`, documentId);
-        }
-      } else {
-        console.log('Document does not exist:', documentId);
-      }
-    } catch (error) {
-      console.error('Error deleting field:', error);
-    }
+    //       console.log(`Field "${fieldNameToDelete}" deleted successfully from document:`, documentId);
+    //       await fetchDocuments(); // Refresh the document list after field deletion
+    //     } else {
+    //       console.log(`Field "${fieldNameToDelete}" does not exist in document:`, documentId);
+    //     }
+    //   } else {
+    //     console.log('Document does not exist:', documentId);
+    //   }
+    // } catch (error) {
+    //   console.error('Error deleting field:', error);
+    // }
   };
 
   return (
@@ -330,11 +312,12 @@ const RestaurantView = () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
+                // Navigate to the DocumentDetailsScreen with the selected document data
                 navigation.navigate('table', { TableData: item.data });
               }}
               style={styles.selectDocumentButton}
             >
-              <Text style={styles.selectDocumentButtonText}>View this restaurent</Text>
+              <Text style={styles.selectDocumentButtonText}>View this table</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -363,6 +346,12 @@ const RestaurantView = () => {
        </TouchableOpacity>
       )}
       
+    
+
+      {/* Create a new document button */}
+      
+
+
       {showAddressDropdown ? (
         <View style={styles.addressDropdownContainer}>
           <Text style={styles.fieldLabel}>Address:</Text>
@@ -551,4 +540,5 @@ const styles = StyleSheet.create({
   
 });
 
-export default RestaurantView;
+
+export default TableScreen;

@@ -44,7 +44,7 @@ export default function RestaurantsDisplay() {
             const rating = doc.data().rating;
             const ratedPeople = doc.data().ratingNumber;
             const TablesubcollectionName = doc.data().subcollection;
-          
+            console.log('rating is: ',rating)
             if (imageUrl && TablesubcollectionName) {
               const tableData = await fetchTableData(db, TablesubcollectionName);
           
@@ -62,7 +62,7 @@ export default function RestaurantsDisplay() {
             }
           }
           
-  
+          
           // Set the tableSubcollectionName here
           if (data.length > 0) {
             setTableSubcollectionName(data[0].TablesubcollectionName);
@@ -88,19 +88,25 @@ export default function RestaurantsDisplay() {
     console.log('subcollectionName is ',subcollectionName)
     try {
       const queryTableSnapshot = await getDocs(collectionGroup(db, subcollectionName));
+      console.log('queryTableSnapshot.docs is',queryTableSnapshot.docs)
       for (const doc of queryTableSnapshot.docs) {
         const Capacity = doc.data().Capacity;
         const table = doc.data().table;
         const available = doc.data().available;
+       
 
         if (available) {
           tableData.push({ Capacity, table });
+          console.log('Capacity is: ',Capacity)
+          console.log('table is: ',table)
+          console.log('available is: ',available)
         }
       }
+      
     } catch (error) {
       console.error('Error fetching table data:', error);
     }
-
+      
     return tableData;
   }
 
