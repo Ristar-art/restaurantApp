@@ -14,14 +14,16 @@ import RestaurantsDisplay from './components/RestaurantsDisplay'
 import AdminPanel from './components/adminPanel';
 import RestaurantView from './components/RestaurantView';
 import TableScreen from './components/Table';
-
+import AppNavigator from './components/AppNavigator';
+import userRoleReducer from './components/userRoleSlice';
 const Stack = createStackNavigator();
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     customAuth: customAuthReducer,
-    signUp: signUpSlice
+    signUp: signUpSlice,
+    userRoles: userRoleReducer
   }, 
 });
 
@@ -30,17 +32,17 @@ export default function MainApp() {
   return (
      <Provider store={store}>
       <NavigationContainer>
-      <Stack.Navigator>
-  <Stack.Screen name="Home" component={Home} />
-  <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }}/>
-  <Stack.Screen name="Signup" component={SignUpForm} options={{ headerShown: false }}/>
-  <Stack.Screen name="deshbord" component={DeshBord} options={{ headerShown: false }}/>
-  <Stack.Screen name="RestaurantsDisplay" component={RestaurantsDisplay} options={{ headerShown: false }} />
-  <Stack.Screen name="admin" component={AdminPanel} options={{ headerShown: false }}/>
-  <Stack.Screen name="restaurantview" component={RestaurantView} options={{ headerShown: false }}/>
-  <Stack.Screen name="table" component={TableScreen} options={{ headerShown: false }}/>
- 
-</Stack.Navigator>
+      
+        <Stack.Navigator>
+           <Stack.Screen name="Home" component={Home} />
+           <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }}/>
+           <Stack.Screen name="Signup" component={SignUpForm} options={{ headerShown: false }}/>
+           <Stack.Screen name="deshbord" component={DeshBord} options={{ headerShown: false }}/>
+           <Stack.Screen name="RestaurantsDisplay" component={RestaurantsDisplay} options={{ headerShown: false }} />
+           <Stack.Screen name="admin" component={AdminPanel} options={{ headerShown: false }}/>
+           <Stack.Screen name="restaurantview" component={RestaurantView} options={{ headerShown: false }}/>
+           <Stack.Screen name="table" component={TableScreen} options={{ headerShown: false }}/> 
+        </Stack.Navigator>
        </NavigationContainer>
     </Provider>
     

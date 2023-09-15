@@ -1,13 +1,15 @@
-import { createSlice, configureStore } from '@reduxjs/toolkit';
+// signUpSlice.js
+
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   firstName: '',
   lastName: '',
   email: '',
   password: '',
-  subscribe: true,
+  role: 'regularUser', // Add the 'role' field with the default value
   loading: false,
-  error:'',
+  error: null,
 };
 
 const signUpSlice = createSlice({
@@ -26,15 +28,15 @@ const signUpSlice = createSlice({
     setPassword: (state, action) => {
       state.password = action.payload;
     },
-    setSubscribe: (state, action) => {
-      state.subscribe = action.payload;
+    setRole: (state, action) => { // Add a new reducer for setting the 'role'
+      state.role = action.payload;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
     setError: (state, action) => {
       state.error = action.payload;
-    }
+    },
   },
 });
 
@@ -43,7 +45,7 @@ export const {
   setLastName,
   setEmail,
   setPassword,
-  setSubscribe,
+  setRole, // Export the new reducer
   setLoading,
   setError,
 } = signUpSlice.actions;

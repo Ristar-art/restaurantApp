@@ -5,7 +5,7 @@ const BackgroundImage = () => {
   return (
     
          <ImageBackground
-      source={{ uri: 'https://img.freepik.com/premium-photo/last-supper-painting-by-christian-art_888396-3076.jpg' }}
+      source={{ uri: 'https://i.guim.co.uk/img/media/c956027ec764b4dabc490b4bf9993627a79f3d6c/228_436_5416_3250/master/5416.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=bc8fbc29ea344e298c44568ffd9f8ad8' }}
       style={styles.imageBackground}
     >   
     </ImageBackground>

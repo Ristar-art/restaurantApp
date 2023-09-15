@@ -4,8 +4,13 @@ import { getFirestore, collectionGroup, getDocs, updateDoc, collection } from 'f
 import { useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { auth } from '../firebaseConfig';
+import { setIsLoggedIn, setIsLoading } from '../authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
-export default function RestaurantsDisplay() {
+
+export default function RestaurantsDisplay({ navigation }) {
   const [restaurantData, setRestaurantData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedDateTime, setSelectedDateTime] = useState(null);
@@ -20,8 +25,25 @@ export default function RestaurantsDisplay() {
   const [selectedTime, setSelectedTime] = useState(null);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [tableSubcollectionName, setTableSubcollectionName] = useState(null); // Add this line
-  const [selectedTableId, setSelectedTableId] = useState(null);
+  const [selectedTableId, setSelectedTableId] = useState(null);  
 
+  const dispatch = useDispatch();
+  const { isLoggedIn, isLoading } = useSelector(state => state.auth);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      dispatch(setIsLoggedIn(!!user));
+      dispatch(setIsLoading(false));
+    });
+
+    signOut(auth);
+
+    return () => unsubscribe();
+  }, [dispatch]);
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -171,6 +193,12 @@ export default function RestaurantsDisplay() {
   }
 };
   const bookTable = async () => {
+  
+    if (!isLoggedIn) {
+      // User is not logged in, navigate to the login page
+      navigation.navigate('Login'); // Replace 'Login' with the actual name of your login screen
+      return;
+    }
     if (selectedTableId && selectedDateTime && tableSubcollectionName) {
       try {
         const db = getFirestore();

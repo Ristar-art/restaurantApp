@@ -20,8 +20,9 @@ import { useRoute } from '@react-navigation/native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native'; // Import navigation hooks
-
-
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons'; 
 const RestaurantView = () => {
   const [documentData, setDocumentData] = useState([]);
   const route = useRoute();
@@ -36,7 +37,7 @@ const RestaurantView = () => {
   const [selectedAddress, setSelectedAddress] = useState(''); 
   const [selectTable,setSelectTable]= useState('');
   const navigation = useNavigation();
-  console.log('parentId is: ', parentId);
+ 
 
   useEffect(() => {
     const firestore = getFirestore();
@@ -165,7 +166,8 @@ const RestaurantView = () => {
         const newDocRef = await addDoc(subCollectionRef, {
           address: selectTable,
           name: subCollectionName,
-          subcollection: selectedAddress
+          subcollection: selectedAddress,
+         
         });
 
         console.log('New document created successfully with ID:', newDocRef.id);
@@ -174,7 +176,7 @@ const RestaurantView = () => {
         // Automatically generate an ID for the document under subCollectionRef
         await addDoc(subcollectionRef, {
           // You can add any fields here
-          subcollection: selectTable,
+          address: selectTable,
         });
         await fetchDocuments();
 
@@ -187,6 +189,7 @@ const RestaurantView = () => {
       console.error('Error creating a new document:', error);
     }
   };
+
 
   const fetchDocuments = async () => {
     try {
@@ -259,6 +262,7 @@ const RestaurantView = () => {
     }
   };
 
+  
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Documents in Sub-Collection: {subCollectionName}</Text>
@@ -288,8 +292,9 @@ const RestaurantView = () => {
                       setNewFieldValue(item.data[fieldName]);
                     }}
                     style={styles.editFieldButton}
-                  >
-                    <Text style={styles.editFieldButtonText}>Edit Field</Text>
+                  >  
+                 <AntDesign name="edit" size={24} color="black" />
+                    {/* <Text style={styles.editFieldButtonText}>Edit Field</Text> */}
                   </TouchableOpacity>
                 )}
                 {fieldName === selectedFieldName && ( // Render "Save" button for selected field
@@ -311,8 +316,9 @@ const RestaurantView = () => {
                 <TouchableOpacity
                   onPress={() => handleDeleteField(item.id, fieldName)}
                   style={styles.deleteFieldButton}
-                >
-                  <Text style={styles.deleteFieldButtonText}>Delete Field</Text>
+                >  
+                 <AntDesign name="delete" size={24} color="black" />
+                  {/* <Text style={styles.deleteFieldButtonText}>Delete Field</Text> */}
                 </TouchableOpacity>
               </View>
             ))}
@@ -320,21 +326,24 @@ const RestaurantView = () => {
               onPress={() => handleDeleteDocument(item.id)}
               style={styles.deleteDocumentButton}
             >
+              <AntDesign name="delete" size={24} color="black" />
               <Text style={styles.deleteDocumentButtonText}>Delete Document</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setSelectedDocumentId(item.id)}
               style={styles.selectDocumentButton}
-            >
+            > 
+            <AntDesign name="select1" size={24} color="black" />
               <Text style={styles.selectDocumentButtonText}>Select Document</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('table', { TableData: item.data });
+                navigation.navigate('table', { TableData: item.data,parentId,subCollectionName,documentId: item.id});
+              
               }}
               style={styles.selectDocumentButton}
             >
-              <Text style={styles.selectDocumentButtonText}>View this restaurent</Text>
+              <MaterialIcons name="preview" size={24} color="black" />
             </TouchableOpacity>
           </View>
         )}
@@ -359,6 +368,7 @@ const RestaurantView = () => {
        </View>
       ):(
        <TouchableOpacity onPress={handleAddFieldDropdown} style={styles.addFieldButton}>
+        <AntDesign name="addfile" size={24} color="black" />
        <Text style={styles.addFieldButtonText}>Add New Field</Text>
        </TouchableOpacity>
       )}
@@ -380,11 +390,13 @@ const RestaurantView = () => {
             style={styles.addressDropdown}
           />
           <TouchableOpacity onPress={handleAddressSelection} style={styles.addressSelectionButton}>
+          <AntDesign name="addfolder" size={24} color="black" />
             <Text style={styles.addressSelectionButtonText}>Create Document</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <TouchableOpacity onPress={handleCreateNewDocument} style={styles.createNewDocumentButton}>
+          <AntDesign name="addfolder" size={24} color="black" />
         <Text style={styles.createNewDocumentButtonText}>Create New Document</Text>
       </TouchableOpacity>
       )}
@@ -425,7 +437,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   editFieldButton: {
-    backgroundColor: 'blue',
+    backgroundColor: 'transparent',
     padding: 5,
     borderRadius: 5,
     marginTop: 5,
@@ -461,7 +473,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   deleteFieldButton: {
-    backgroundColor: 'purple',
+    backgroundColor: 'transparent',
     padding: 5,
     borderRadius: 5,
     marginTop: 5,
@@ -473,7 +485,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   deleteDocumentButton: {
-    backgroundColor: 'red',
+    backgroundColor: 'transparent',
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
@@ -491,7 +503,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   addFieldButton: {
-    backgroundColor: 'blue',
+    backgroundColor: 'transparent',
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
@@ -502,7 +514,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   createNewDocumentButton: {
-    backgroundColor: 'green',
+    backgroundColor: 'transparent',
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
@@ -527,7 +539,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   addressSelectionButton: {
-    backgroundColor: 'blue',
+    backgroundColor: 'transparent',
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
@@ -538,7 +550,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   selectDocumentButton: {
-    backgroundColor: 'orange', // Customize the select button's style
+    backgroundColor: 'transparent', // Customize the select button's style
     padding: 10,
     borderRadius: 5,
     marginTop: 10,

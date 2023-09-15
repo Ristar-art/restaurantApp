@@ -26,7 +26,7 @@ const LoginPage = ({ navigation }) => {
    
       if (user) {
         const token = await getIdToken(user); 
-        navigation.navigate('deshbord');       
+        navigation.navigate('Home');       
       }
     } catch (error) {
       console.error('Error during login:', error);

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { setFirstName, setLastName, setEmail, setPassword, setLoading,setError } from './signUnSlice';
-import {getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { setFirstName, setLastName, setEmail, setPassword, setLoading, setError,setRole } from './signUnSlice';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { assignUserRole } from './userRoleSlice'; // Import your custom function for assigning roles
 
 const SignUpForm = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -14,27 +15,40 @@ const SignUpForm = ({ navigation }) => {
     lastName: '',
     email: '',
     password: '',
+    role: 'regularUser', // Default role
   });
 
   const handleSubmit = async () => {
     dispatch(setLoading(true));
-
+  
     try {
-        const auth = getAuth();
+      const auth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(
         auth, 
         formData.email,
         formData.password
       );
-
-      
-      dispatch(setFirstName(formData.firstName));
-      dispatch(setLastName(formData.lastName));
-      dispatch(setEmail(formData.email));
-      dispatch(setPassword(formData.password));
-   
-      navigation.navigate('Login');
-      
+  
+      if (userCredential) {
+        dispatch(setFirstName(formData.firstName));
+        dispatch(setLastName(formData.lastName));
+        dispatch(setEmail(formData.email));
+        dispatch(setPassword(formData.password));
+        dispatch(setRole(formData.role))
+  
+        // Assign the selected role to the user
+        const roleAssigned = await assignUserRole(userCredential.user.uid, formData.role);
+  
+        if (roleAssigned) {
+          navigation.navigate('Login');
+        } else {
+          console.error('Failed to assign user role');
+          // Handle the error as needed
+        }
+      } else {
+        console.error('User registration failed');
+        // Handle the error as needed
+      }
     } catch (error) {
       console.error('Error during registration:', error);
       dispatch(setLoading(false));
@@ -42,9 +56,10 @@ const SignUpForm = ({ navigation }) => {
         setError('An error occurred while registering. Please try again later.')
       );
     } finally {
-        dispatch(setLoading(false)); 
-      }
+      dispatch(setLoading(false)); 
+    }
   };
+  
 
   const handleInputChange = (field, value) => {
     setFormData({
@@ -108,6 +123,19 @@ const SignUpForm = ({ navigation }) => {
                 value={formData.password}
                 onChangeText={text => handleInputChange('password', text)}
                 secureTextEntry
+              />
+            </View>
+          </View>
+          <View style={styles.formGroup}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputIcon}>
+                <Icon name="user" size={30} color="black" />
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Role (admin or regularUser)"
+                value={formData.role}
+                onChangeText={text => handleInputChange('role', text)}
               />
             </View>
           </View>
