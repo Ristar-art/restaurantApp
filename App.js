@@ -42,6 +42,8 @@ export default function MainApp() {
            <Stack.Screen name="admin" component={AdminPanel} options={{ headerShown: false }}/>
            <Stack.Screen name="restaurantview" component={RestaurantView} options={{ headerShown: false }}/>
            <Stack.Screen name="table" component={TableScreen} options={{ headerShown: false }}/> 
+           
+           
         </Stack.Navigator>
        </NavigationContainer>
     </Provider>

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { setFirstName, setLastName, setEmail, setPassword, setLoading, setError,setRole } from './signUnSlice';
+import { setFirstName, setLastName, setEmail, setPassword, setLoading, setError, setRole } from './signUnSlice';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { assignUserRole } from './userRoleSlice'; // Import your custom function for assigning roles
+import firebase from 'firebase/app';
+import { getFirestore, doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
 
 const SignUpForm = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -20,25 +22,39 @@ const SignUpForm = ({ navigation }) => {
 
   const handleSubmit = async () => {
     dispatch(setLoading(true));
-  
+
     try {
       const auth = getAuth();
       const userCredential = await createUserWithEmailAndPassword(
-        auth, 
+        auth,
         formData.email,
         formData.password
       );
-  
+
       if (userCredential) {
         dispatch(setFirstName(formData.firstName));
         dispatch(setLastName(formData.lastName));
         dispatch(setEmail(formData.email));
         dispatch(setPassword(formData.password));
-        dispatch(setRole(formData.role))
-  
+        dispatch(setRole(formData.role));
+
+        // Initialize Firestore
+        const firestore = getFirestore();
+
+        // Use the user's UID as the document ID for the 'profile' document
+        const userProfileRef = doc(firestore, 'Profile', userCredential.user.uid);
+
+        await setDoc(userProfileRef, {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          role: formData.role,
+          // Other profile data you may want to store
+        });
+
         // Assign the selected role to the user
         const roleAssigned = await assignUserRole(userCredential.user.uid, formData.role);
-  
+
         if (roleAssigned) {
           navigation.navigate('Login');
         } else {
@@ -56,10 +72,9 @@ const SignUpForm = ({ navigation }) => {
         setError('An error occurred while registering. Please try again later.')
       );
     } finally {
-      dispatch(setLoading(false)); 
+      dispatch(setLoading(false));
     }
   };
-  
 
   const handleInputChange = (field, value) => {
     setFormData({
@@ -67,6 +82,7 @@ const SignUpForm = ({ navigation }) => {
       [field]: value,
     });
   };
+
 
   return (
     <View style={styles.container}>

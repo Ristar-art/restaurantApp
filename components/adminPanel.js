@@ -18,10 +18,10 @@ const AdminPanel = () => {
 
  
   const fetchSubCollectionNames = async () => {
-   
+       console.log('this is happening')
     try {
       const docSnapshot = await getDoc(dataDocRef);
-
+      
       if (docSnapshot.exists()) {
         const data = docSnapshot.data();
         setSubCollectionNames(data.names || []);
@@ -32,7 +32,7 @@ const AdminPanel = () => {
   };
 
   const addSubCollectionName = async () => {
-   
+    console.log('addSubCollectionName is happening')
     try {
       const docSnapshot = await getDoc(dataDocRef);
 
@@ -68,19 +68,14 @@ const AdminPanel = () => {
     }
   };
 
+  useEffect(() => {
+    fetchSubCollectionNames();
+  }, []);
+
   const handleRestaurantPress = async (item) => {
     const userRole = useSelector(state => state.auth.userRole);
-
-    if (!isLoggedIn) {
-      navigation.navigate('Login');
-      return;
-    }
-
-    if (userRole !== 'admin') {
-      alert('You do not have permission to access this feature.');
-      return;
-    }
-
+    console.log('handleRestaurantPress is happening')
+   
     try {
       const querySnapshot = await getDocs(collection(firestore, 'DATA'));
       let parentId = null;

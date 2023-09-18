@@ -6,6 +6,7 @@ import {auth } from '../firebaseConfig';
 import {signInWithEmailAndPassword } from 'firebase/auth';
 import { getIdToken } from 'firebase/auth';
 
+
 const LoginPage = ({ navigation }) => {
   const email = useSelector((state) => state.customAuth.email);
   const password = useSelector((state) => state.customAuth.password);
