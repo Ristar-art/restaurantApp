@@ -16,6 +16,7 @@ import RestaurantView from './components/RestaurantView';
 import TableScreen from './components/Table';
 import AppNavigator from './components/AppNavigator';
 import userRoleReducer from './components/userRoleSlice';
+import ProfilePictureScreen from './components/Profile';
 const Stack = createStackNavigator();
 
 const store = configureStore({
@@ -42,7 +43,7 @@ export default function MainApp() {
            <Stack.Screen name="admin" component={AdminPanel} options={{ headerShown: false }}/>
            <Stack.Screen name="restaurantview" component={RestaurantView} options={{ headerShown: false }}/>
            <Stack.Screen name="table" component={TableScreen} options={{ headerShown: false }}/> 
-           
+           <Stack.Screen name="profile" component={ProfilePictureScreen} options={{ headerShown: false }}/>
            
         </Stack.Navigator>
        </NavigationContainer>

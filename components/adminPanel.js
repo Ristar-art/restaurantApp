@@ -1,7 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from 'firebase/firestore';
+import {
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Platform,
+} from 'react-native';
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  collection,
+  addDoc,
+  getDocs,
+  getDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
+import { storage } from '../firebaseConfig';
 
 const AdminPanel = () => {
   const [subCollectionName, setSubCollectionName] = useState('');
@@ -14,14 +35,40 @@ const AdminPanel = () => {
   const firestore = getFirestore();
   const dataDocRef = doc(firestore, 'DATA', 'subCollectionNames');
   const dataCollectionRef = collection(firestore, 'DATA');
- 
+  const [image, setImage] = useState(null);
 
- 
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work.');
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.cancelled) {
+        setImage(result.uri); 
+      }
+    } catch (error) {
+      console.error('Error picking an image:', error);
+    }
+  };
+
   const fetchSubCollectionNames = async () => {
-       console.log('this is happening')
     try {
       const docSnapshot = await getDoc(dataDocRef);
-      
+
       if (docSnapshot.exists()) {
         const data = docSnapshot.data();
         setSubCollectionNames(data.names || []);
@@ -32,10 +79,9 @@ const AdminPanel = () => {
   };
 
   const addSubCollectionName = async () => {
-    console.log('addSubCollectionName is happening')
     try {
       const docSnapshot = await getDoc(dataDocRef);
-
+  
       if (docSnapshot.exists()) {
         const data = docSnapshot.data() || { names: [] };
         data.names.push(subCollectionName);
@@ -43,39 +89,51 @@ const AdminPanel = () => {
       } else {
         await setDoc(dataDocRef, { names: [subCollectionName] });
       }
-
       const newDocRef = await addDoc(dataCollectionRef, {
         subCollection: subCollectionName,
-        imageurl: imageURL,
         number: number,
       });
-
+  
       const parentId = newDocRef.id;
+     
+      if (image) {
+        const response = await fetch(image);
+        const blob = await response.blob();
+        const storageRef = ref(storage, `RestaurantImages/${parentId}`);
+        await uploadBytes(storageRef, blob);
+  
+        
+        const imageUrl = await getDownloadURL(storageRef);
+        
+        
+        await updateDoc(newDocRef, { imageurl: imageUrl });
+  
+        setImageURL(imageUrl); // Set the image URL in state
+      }
+  
       const subCollectionRef = collection(newDocRef, subCollectionName);
-
+  
       await addDoc(subCollectionRef, {
         address: 'maluti',
         name: subCollectionName,
       });
-
+  
       setParentId(parentId);
       fetchSubCollectionNames();
       setSubCollectionName('');
-      setImageURL('');
+      setImage('');
       setNumber('');
     } catch (error) {
       console.error('Error adding sub-collection name: ', error);
     }
   };
+  
 
   useEffect(() => {
     fetchSubCollectionNames();
   }, []);
 
   const handleRestaurantPress = async (item) => {
-    const userRole = useSelector(state => state.auth.userRole);
-    console.log('handleRestaurantPress is happening')
-   
     try {
       const querySnapshot = await getDocs(collection(firestore, 'DATA'));
       let parentId = null;
@@ -96,23 +154,20 @@ const AdminPanel = () => {
     }
   };
 
-
   return (
     <View style={styles.Container}>
       <TextInput
-        placeholder="Enter Restaurent name"
+        placeholder="Enter Restaurant name"
         value={subCollectionName}
         onChangeText={(text) => setSubCollectionName(text)}
       />
 
-      <TextInput
-        placeholder="Enter image URL"
-        value={imageURL}
-        onChangeText={(text) => setImageURL(text)}
-      />
+      <TouchableOpacity style={styles.button} onPress={pickImage}>
+        <Text style={styles.buttonText}>Choose Image</Text>
+      </TouchableOpacity>
 
       <TextInput
-        placeholder="Enter number of restaurents"
+        placeholder="Enter number of restaurants"
         value={number}
         onChangeText={(text) => setNumber(text)}
       />
