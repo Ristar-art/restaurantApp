@@ -36,6 +36,15 @@ const AdminPanel = () => {
   const dataDocRef = doc(firestore, 'DATA', 'subCollectionNames');
   const dataCollectionRef = collection(firestore, 'DATA');
   const [image, setImage] = useState(null);
+  const [restaurantImage, setRestaurantImage] = useState(null); 
+  const [lastSubcollection,setLastSubcollection]=useState('');
+  const [subAddress, setSubAddress] = useState(''); 
+  const [restarentAddress,setRestarentAddress] = useState('');
+  const [capacity,setCapacity] = useState(null)
+  const [seatsNumber,setSeatsNumber] =  useState(null)
+  const [tableNumber,setTableNumber]= useState(null)
+  const [peopleRating,setPeopleRating]= useState(null)
+ 
 
   useEffect(() => {
     (async () => {
@@ -58,12 +67,29 @@ const AdminPanel = () => {
       });
 
       if (!result.cancelled) {
-        setImage(result.uri); 
+        setImage(result.assets[0].uri); 
       }
     } catch (error) {
       console.error('Error picking an image:', error);
     }
   };
+  const pickRestaurantImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      if (!result.cancelled) {
+        setRestaurantImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error picking a restaurant image:', error);
+    }
+  };
+  
 
   const fetchSubCollectionNames = async () => {
     try {
@@ -95,17 +121,15 @@ const AdminPanel = () => {
       });
   
       const parentId = newDocRef.id;
-     
+  
       if (image) {
         const response = await fetch(image);
         const blob = await response.blob();
         const storageRef = ref(storage, `RestaurantImages/${parentId}`);
         await uploadBytes(storageRef, blob);
   
-        
         const imageUrl = await getDownloadURL(storageRef);
-        
-        
+  
         await updateDoc(newDocRef, { imageurl: imageUrl });
   
         setImageURL(imageUrl); // Set the image URL in state
@@ -113,20 +137,72 @@ const AdminPanel = () => {
   
       const subCollectionRef = collection(newDocRef, subCollectionName);
   
-      await addDoc(subCollectionRef, {
-        address: 'maluti',
+      const newResraurentDocRef = await addDoc(subCollectionRef, {
+        address: restarentAddress,
         name: subCollectionName,
+        subcollection: subAddress,
+        rating:0,
+        numberOfSeats:seatsNumber,
+        ratingNumber:0
       });
+  
+      const restaurantId = newResraurentDocRef.id;
+  
+     
+         console.log('restaurantImage is ',restaurantImage)
+         if (restaurantImage) {
+          const response = await fetch(restaurantImage);
+          const blob = await response.blob();
+          const storageRef = ref(storage, `AddressRestaurantImages/${restaurantId}`);
+          await uploadBytes(storageRef, blob);
+        
+          const imageUrl = await getDownloadURL(storageRef);
+        
+          // Check if newResraurentDocRef exists before attempting to update
+          if (newResraurentDocRef) {
+            const url = await updateDoc(newResraurentDocRef, { restImageurl: imageUrl });
+            console.log('url is: ', url);
+          } else {
+            console.error('newResraurentDocRef is null. Image not updated.');
+          }
+        } else {
+          console.warn('restaurantImage is null. Image not updated.');
+        }
+       // const docIdRef = newResraurentDocRef.id;
+       const lastsubCollectionRef = collection(firestore, 'DATA', parentId, subCollectionName,restaurantId,subAddress);
+        // Add a new document to the sub-collection with an auto-generated ID and the selected address
+        // const newDocRef = await addDoc(subCollectionRef, {
+        //   address: selectTable,
+        //   name: subCollectionName,
+        //   subcollection: selectedAddress,
+         
+        // });
+
+        // console.log('New document created successfully with ID:', newDocRef.id);
+        // const subcollectionRef = collection(newDocRef, selectedAddress);
+         
+       // Automatically generate an ID for the document under subCollectionRef
+        await addDoc(lastsubCollectionRef, {
+          // You can add any fields here
+          address: subAddress,
+          available:true,
+          Capacity: capacity,
+          table: tableNumber,
+          
+        });
+        // await fetchDocuments();
   
       setParentId(parentId);
       fetchSubCollectionNames();
       setSubCollectionName('');
       setImage('');
       setNumber('');
+      setRestaurantImage(''); // Reset restaurantImage state
     } catch (error) {
       console.error('Error adding sub-collection name: ', error);
     }
   };
+  
   
 
   useEffect(() => {
@@ -171,6 +247,40 @@ const AdminPanel = () => {
         value={number}
         onChangeText={(text) => setNumber(text)}
       />
+      <TouchableOpacity style={styles.button} onPress={pickRestaurantImage}>
+        <Text style={styles.buttonText}>Choose Restaurant Image</Text>
+       </TouchableOpacity>
+       <TextInput
+            placeholder="Select an address"
+            value={restarentAddress}
+            onChangeText={(text) => setRestarentAddress(text)} // Update this line
+            style={styles.addressDropdown}
+     />
+       <TextInput
+            placeholder="Select a Subaddress"
+            value={subAddress}
+            onChangeText={(text) => setSubAddress(text)} // Update this line
+            style={styles.addressDropdown}
+     />
+     
+      <TextInput
+            placeholder="state number of seats"
+            value={seatsNumber}
+            onChangeText={(text) => setSeatsNumber(text)} // Update this line
+            style={styles.addressDropdown}
+     />
+     <TextInput
+            placeholder="Table Capacity"
+            value={capacity}
+            onChangeText={(text) => setCapacity(text)} // Update this line
+            style={styles.addressDropdown}
+     />
+      <TextInput
+            placeholder="Table Number"
+            value={tableNumber}
+            onChangeText={(text) => setTableNumber(text)} // Update this line
+            style={styles.addressDropdown}
+     />
 
       <TouchableOpacity style={styles.button} onPress={addSubCollectionName}>
         <Text style={styles.buttonText}>Add a restaurant</Text>
