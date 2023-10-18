@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -20,9 +20,6 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@rea
 import { Text, View, StyleSheet, Image } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore'; // Corrected import
-//import { auth, storage } from './firebaseConfig';
-//import { setIsLoggedIn, setIsLoading } from './authSlice';
-import AuthSection from './AuthSection';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -32,8 +29,8 @@ const store = configureStore({
     auth: authReducer,
     customAuth: customAuthReducer,
     signUp: signUpSlice,
-    userRoles: userRoleReducer,
-  },
+    userRoles: userRoleReducer
+  }, 
 });
 
 const styles = StyleSheet.create({
@@ -58,10 +55,12 @@ const styles = StyleSheet.create({
 
 function CustomDrawerContent(props) {
   const [userData, setUserData] = useState({});
-  const auth = getAuth();
-  const user = auth.currentUser;
 
   useEffect(() => {
+    // Fetch user data from Firestore when the component mounts
+    const auth = getAuth();
+    const user = auth.currentUser;
+
     if (user) {
       const firestore = getFirestore();
       const userProfileRef = doc(firestore, 'Profile', user.uid);
@@ -76,7 +75,8 @@ function CustomDrawerContent(props) {
           console.error('Error fetching user data:', error);
         });
     }
-  }, [user]);
+  }, []);
+
   const hasProfileImage = userData.profileImage;
 
   return (
@@ -108,11 +108,7 @@ function CustomDrawerContent(props) {
   );
 }
 
-
-
-
 function DrawerNavigator() {
-
   return (
     <Drawer.Navigator initialRouteName="Home" drawerContent={(props) => <CustomDrawerContent {...props} />}>
       <Drawer.Screen name="Home" component={Home} />
@@ -123,11 +119,8 @@ function DrawerNavigator() {
 }
 
 export default function MainApp() {
-
-
   return (
     <Provider store={store}>
-      <AuthSection/>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="DrawerNavigator" screenOptions={{ headerShown: false }}>
           <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />

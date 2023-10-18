@@ -14,14 +14,11 @@ import { ref, uploadBytes,getDownloadURL } from 'firebase/storage';
 
 
 export default function Home({ navigation }) {
+
   const dispatch = useDispatch();
   const { isLoggedIn, isLoading } = useSelector(state => state.auth);
   const userRole = useSelector(state => state.userRole); 
-  
-  
- 
-  
-  
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       dispatch(setIsLoggedIn(!!user));
@@ -65,11 +62,6 @@ export default function Home({ navigation }) {
     }
   };
 
-  const viewProfile=()=>{
-
-    // console.log('the pofile should appear')
-    // <ProfilePictureScreen/>
-  }
   
   return (
     <View style={styles.container}>
@@ -114,7 +106,7 @@ export default function Home({ navigation }) {
           <Icon name="globe" size={60} color="gold" />
         </View>
         <View style={styles.spaceBetween}>
-          <Icon name="star" size={60} color="gray" onPress={handleImagePress} />
+          <Icon name="star" size={60} color="gray"  />
         </View>
         <View style={styles.spaceBetween}>
           <Icon name="user" size={60} color="gray" onPress={() => navigation.navigate('profile')} />

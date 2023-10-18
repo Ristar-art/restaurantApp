@@ -7,10 +7,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { auth } from '../firebaseConfig';
 import { setIsLoggedIn, setIsLoading } from '../authSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 
 
 export default function RestaurantsDisplay({ navigation }) {
+
   const [restaurantData, setRestaurantData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedDateTime, setSelectedDateTime] = useState(null);
@@ -36,7 +37,7 @@ export default function RestaurantsDisplay({ navigation }) {
       dispatch(setIsLoading(false));
     });
 
-    signOut(auth);
+    // signOut(auth);
 
     return () => unsubscribe();
   }, [dispatch]);
@@ -66,7 +67,7 @@ export default function RestaurantsDisplay({ navigation }) {
             const rating = doc.data().rating;
             const ratedPeople = doc.data().ratingNumber;
             const TablesubcollectionName = doc.data().subcollection;
-            console.log('rating is: ',rating)
+           // console.log('rating is: ',rating)
             if (imageUrl && TablesubcollectionName) {
               const tableData = await fetchTableData(db, TablesubcollectionName);
           
@@ -107,10 +108,10 @@ export default function RestaurantsDisplay({ navigation }) {
   
   async function fetchTableData(db, subcollectionName) {
     const tableData = [];
-    console.log('subcollectionName is ',subcollectionName)
+    //console.log('subcollectionName is ',subcollectionName)
     try {
       const queryTableSnapshot = await getDocs(collectionGroup(db, subcollectionName));
-      console.log('queryTableSnapshot.docs is',queryTableSnapshot.docs)
+      //console.log('queryTableSnapshot.docs is',queryTableSnapshot.docs)
       for (const doc of queryTableSnapshot.docs) {
         const Capacity = doc.data().Capacity;
         const table = doc.data().table;
@@ -119,9 +120,9 @@ export default function RestaurantsDisplay({ navigation }) {
 
         if (available) {
           tableData.push({ Capacity, table });
-          console.log('Capacity is: ',Capacity)
-          console.log('table is: ',table)
-          console.log('available is: ',available)
+          // console.log('Capacity is: ',Capacity)
+          // console.log('table is: ',table)
+          // console.log('available is: ',available)
         }
       }
       
@@ -150,7 +151,7 @@ export default function RestaurantsDisplay({ navigation }) {
     setSelectedTable(table); // Update the selectedTable state
     setSelectedTableId(table.table); // Use the table id
     setDatePickerVisibility(true);
-    console.log('TablesubcollectionName: ', tableSubcollectionName);
+    //console.log('TablesubcollectionName: ', tableSubcollectionName);
   };
   
   
@@ -189,69 +190,71 @@ export default function RestaurantsDisplay({ navigation }) {
     }));
 
     hideTimePicker(); // Hide the time picker
-    console.log('dateAndTime is: ', adjustedTime);
+    //console.log('dateAndTime is: ', adjustedTime);
   }
 };
-  const bookTable = async () => {
-  
-    if (!isLoggedIn) {
-      // User is not logged in, navigate to the login page
-      navigation.navigate('Login'); // Replace 'Login' with the actual name of your login screen
-      return;
-    }
-    if (selectedTableId && selectedDateTime && tableSubcollectionName) {
-      try {
-        const db = getFirestore();
-  
-        // Query the specific subcollection using collectionGroup
-        const queryTableSnapshot = await getDocs(
-          collectionGroup(db, tableSubcollectionName)
-        );
-  
-        for (const doc of queryTableSnapshot.docs) {
-          const tableData = doc.data();
-  
-          // Compare the table field in the document data with selectedTableId
-          if (tableData.table === selectedTableId) {
-            const tableDocRef = doc.ref;
-  
-            await updateDoc(tableDocRef, {
-              bookedDateTime: selectedDateTime.toISOString(),
-              available: false,
-            });
-  
-            setRestaurantData((prevData) => {
-              const updatedData = [...prevData];
-              const restaurantIndex = updatedData.findIndex(
-                (item) => item === selectedItem
+const bookTable = async () => {
+  if (!isLoggedIn) {
+    // User is not logged in, navigate to the login page
+    navigation.navigate('Login'); // Replace 'Login' with the actual name of your login screen
+    return;
+  }
+  if (selectedTableId && selectedDateTime && tableSubcollectionName) {
+    try {
+      const db = getFirestore();
+
+      // Query the specific subcollection using collectionGroup
+      const queryTableSnapshot = await getDocs(
+        collectionGroup(db, tableSubcollectionName)
+      );
+
+      for (const doc of queryTableSnapshot.docs) {
+        const tableData = doc.data();
+
+        // Compare the table field in the document data with selectedTableId
+        if (tableData.table === selectedTableId) {
+          const tableDocRef = doc.ref;
+
+          await updateDoc(tableDocRef, {
+            bookedDateTime: selectedDateTime.toISOString(),
+            available: false,
+          });
+
+          setRestaurantData((prevData) => {
+            const updatedData = [...prevData];
+            const restaurantIndex = updatedData.findIndex(
+              (item) => item === selectedItem
+            );
+            if (restaurantIndex !== -1) {
+              const tableIndex = updatedData[restaurantIndex].tableData.findIndex(
+                (tableItem) => tableItem.table === selectedTableId
               );
-              if (restaurantIndex !== -1) {
-                const tableIndex = updatedData[restaurantIndex].tableData.findIndex(
-                  (tableItem) => tableItem.table === selectedTableId
-                );
-                if (tableIndex !== -1) {
-                  updatedData[restaurantIndex].tableData[tableIndex].available = false;
-                }
+              if (tableIndex !== -1) {
+                updatedData[restaurantIndex].tableData[tableIndex].available = false;
               }
-              return updatedData;
-            });
-  
-            setSelectedDateTime(null);
-            setSelectedDate(null);
-            setSelectedTime(null);
-  
-            console.log('Table booked successfully.');
-            break; // Exit the loop once the table is found and updated
-          }
+            }
+            return updatedData;
+          });
+
+          setSelectedDateTime(null);
+          setSelectedDate(null);
+          setSelectedTime(null);
+
+          // Navigate back to the previous screen after booking
+          navigation.goBack();
+
+          //console.log('Table booked successfully.');
+          break; // Exit the loop once the table is found and updated
         }
-      } catch (error) {
-        console.error('Error booking table:', error);
       }
-    } else {
-      console.error('Selected table or date/time is null.');
+    } catch (error) {
+      console.error('Error booking table:', error);
     }
-  };
-  
+  } else {
+    console.error('Selected table or date/time is null.');
+  }
+};
+
   
   
   

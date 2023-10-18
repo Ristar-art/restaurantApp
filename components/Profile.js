@@ -8,8 +8,9 @@ import { storage } from '../firebaseConfig';
 
 const ProfilePictureScreen = ({ navigation }) => {
   const [image, setImage] = useState(null);
-  const [userData, setUserData] = useState({}); // State to store user data
+  const [userData, setUserData] = useState({});
   const [editDropDown, setEditDropDown] = useState(false);
+  const [user, setUser] = useState(null); // Define the user variable
 
   useEffect(() => {
     (async () => {
@@ -23,14 +24,14 @@ const ProfilePictureScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    // Fetch user data from Firestore when the component mounts
     const auth = getAuth();
-    const user = auth.currentUser;
-
-    if (user) {
+    const currentUser = auth.currentUser; // Get the current user
+  
+    if (currentUser) {
+      setUser(currentUser); // Set the user variable
       const firestore = getFirestore();
-      const userProfileRef = doc(firestore, 'Profile', user.uid);
-
+      const userProfileRef = doc(firestore, 'Profile', currentUser.uid);
+      
       getDoc(userProfileRef)
         .then((docSnapshot) => {
           if (docSnapshot.exists()) {
@@ -41,19 +42,14 @@ const ProfilePictureScreen = ({ navigation }) => {
           console.error('Error fetching user data:', error);
         });
     }
-  }, []);
-
-  
-    
- 
+  }, []); 
 
   const toggleEditDropDown = () => {
     setEditDropDown(!editDropDown);
   };
 
-  // Check if the user has a profile image URL
   const hasProfileImage = userData.profileImage;
-  
+
   const pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -64,65 +60,59 @@ const ProfilePictureScreen = ({ navigation }) => {
       });
 
       if (!result.cancelled) {
-        setImage(result.assets[0].uri); // Store the image URI in state
+        setImage(result.assets[0].uri);
       }
     } catch (error) {
       console.error('Error picking an image:', error);
     }
   };
 
-   const saveProfilePicture = async () => {
+  const saveProfilePicture = async () => {
     const auth = getAuth();
-    const user = auth.currentUser;
+    const currentUser = auth.currentUser;
 
-    if (!user) {
-      // User is not authenticated, handle it as needed
+    if (!currentUser) {
+      alert('Please log in to save your profile picture.');
       return;
     }
 
     if (!image) {
-      // No image selected, handle it as needed
       alert('Please choose a profile picture before saving.');
       return;
     }
 
     try {
-      // Upload the image to Firebase Storage
-      const storageRef = ref(storage, `profileImages/${user.uid}`);
+      const storageRef = ref(storage, `profileImages/${currentUser.uid}`);
       const response = await fetch(image);
       const blob = await response.blob();
       await uploadBytes(storageRef, blob);
 
-      // Get the download URL of the uploaded image
       const imageUrl = await getDownloadURL(storageRef);
-    
 
-      // Update the user's profile data with the image URL without overwriting existing data
       const firestore = getFirestore();
-      const userProfileRef = doc(firestore, 'Profile', user.uid);
+      const userProfileRef = doc(firestore, 'Profile', currentUser.uid);
       await updateDoc(userProfileRef, {
-        profileImage: imageUrl, // Store the image URL
+        profileImage: imageUrl,
       });
       setEditDropDown(false);
       alert('Profile picture saved successfully');
     } catch (error) {
       console.error('Error saving profile picture:', error);
-      // Handle the error as needed
     }
   };
-
 
   return (
     <View style={styles.container}>
       <View style={styles.picture}>
         {hasProfileImage ? (
           <Image source={{ uri: userData.profileImage }} style={styles.image} />
+        ) : image ? (
+          <Image source={{ uri: image }} style={styles.image} />
         ) : (
-          image && <Image source={{ uri: image }} style={styles.image} />
+          <Text>No Profile Image</Text>
         )}
       </View>
       <View style={styles.profile}>
-        {/* Display user data */}
         <Text>{userData.firstName}</Text>
         <Text>{userData.lastName}</Text>
         <Text>{userData.email}</Text>
@@ -151,13 +141,12 @@ const ProfilePictureScreen = ({ navigation }) => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5', // Background color for the whole screen
+    backgroundColor: '#f5f5f5',
   },
   profile: {
     marginTop: 20,
@@ -172,7 +161,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
-    backgroundColor: '#fff', // Background color for the image container
+    backgroundColor: '#fff',
   },
   image: {
     width: '100%',

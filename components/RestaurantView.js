@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList,Image } from 'react-native';
 
 import {
   getFirestore,
@@ -15,6 +15,12 @@ import {
   addDoc,
   deleteDoc,
 } from 'firebase/firestore';
+import * as ImagePicker from 'expo-image-picker';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
+import { storage,} from '../firebaseConfig';
+
+
+
 
 import { useRoute } from '@react-navigation/native';
 
@@ -37,7 +43,44 @@ const RestaurantView = () => {
   const [selectedAddress, setSelectedAddress] = useState(''); 
   const [selectTable,setSelectTable]= useState('');
   const navigation = useNavigation();
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+
  
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work.');
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      if (!result.cancelled) {
+        const imageUri = result.uri;
+        const imageRef = ref(storage, 'images/' + result.uri);
+        const imageSnapshot = await uploadBytes(imageRef, imageUri);
+        const imageUrl = await getDownloadURL(imageSnapshot.ref);
+  
+        setImage(imageUrl);
+      }
+    } catch (error) {
+      console.error('Error picking an image:', error);
+    }
+  };
+  
+
 
   useEffect(() => {
     const firestore = getFirestore();

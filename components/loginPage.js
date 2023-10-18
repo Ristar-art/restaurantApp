@@ -1,43 +1,44 @@
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsLoggedIn, setEmail, setPassword, setLoading, setError } from './customAuthSilce';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {auth } from '../firebaseConfig';
-import {signInWithEmailAndPassword } from 'firebase/auth';
-import { getIdToken } from 'firebase/auth';
-
+import { auth } from '../firebaseConfig';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginPage = ({ navigation }) => {
   const email = useSelector((state) => state.customAuth.email);
   const password = useSelector((state) => state.customAuth.password);
   const loading = useSelector((state) => state.customAuth.isLoading);
-  const error = useSelector((state) => state.customAuth.error); 
+  const error = useSelector((state) => state.customAuth.error);
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector(state => state.customAuth);
+
+  // Check if the user is already logged in
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (user) {
+      // If the user is already logged in, navigate to 'Home'
+      navigation.navigate('Home');
+    }
+  }, [navigation]);
 
   const handleSubmit = async () => {
     dispatch(setLoading(true));
-    
-    dispatch(setIsLoggedIn(true));
+  
     try {
-        
+      // Attempt to sign in the user
       await signInWithEmailAndPassword(auth, email, password);
-      
-      const user = auth.currentUser;
-   
-      if (user) {
-        const token = await getIdToken(user); 
-        navigation.navigate('Home');       
-      }
+      dispatch(setIsLoggedIn(true));
+      navigation.navigate('Home');
     } catch (error) {
       console.error('Error during login:', error);
       alert('An error occurred while logging in. Please try again later.');
       dispatch(setError(error.message));
     } finally {
       dispatch(setLoading(false));
-
     }
   };
+  
 
   return (
     <View style={styles.container}>

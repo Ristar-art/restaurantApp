@@ -4,7 +4,7 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
-export default function Dashboard() {
+export default function DeshBord() {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
   const navigation = useNavigation();
@@ -35,7 +35,7 @@ export default function Dashboard() {
   }, []);
 
   const handleRestaurantPress = (restaurantId, collectionName) => {
-    console.log('the collectionName in dashboard is: ', collectionName);
+    //console.log('the collectionName in dashboard is: ', collectionName);
     navigation.navigate('RestaurantsDisplay', { restaurantId, collectionName });
   };
 
