@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, FlatList, Image, StyleSheet, TouchableOpacity, Button } from 'react-native';
-import { getFirestore, collectionGroup, getDocs, updateDoc, collection } from 'firebase/firestore';
+import { Text, View, FlatList, Image, StyleSheet, TouchableOpacity, Button,ImageBackground } from 'react-native';
+import { getFirestore, collectionGroup, getDocs, updateDoc, collection,doc, getDoc} from 'firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -9,6 +9,11 @@ import { setIsLoggedIn, setIsLoading } from '../authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
 
+
+function isURL(str) {
+  const pattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+  return pattern.test(str);
+}
 
 export default function RestaurantsDisplay({ navigation }) {
 
@@ -27,9 +32,35 @@ export default function RestaurantsDisplay({ navigation }) {
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [tableSubcollectionName, setTableSubcollectionName] = useState(null); // Add this line
   const [selectedTableId, setSelectedTableId] = useState(null);  
-
+  const [restaurantImage, setRestaurantImage] = useState(null);
   const dispatch = useDispatch();
   const { isLoggedIn, isLoading } = useSelector(state => state.auth);
+  const [restaurant, setRestaurant] = useState([]);
+ 
+ 
+
+  useEffect(() => {
+    const fetchRestaurantData = async () => {
+      try {
+        const db = getFirestore();
+        const restaurantRef = doc(db, 'DATA', restaurantId); // Adjust the document reference
+        const restaurantSnapshot = await getDoc(restaurantRef); // Adjust the method for getting a single document
+
+        if (restaurantSnapshot.exists()) {
+          const restaurantData = restaurantSnapshot.data();
+          if (restaurantData.imageurl && isURL(restaurantData.imageurl)) {
+            setRestaurantImage(restaurantData.imageurl);
+          }
+        } else {
+          console.log('No restaurant found with the provided ID.');
+        }
+      } catch (error) {
+        console.error('Error fetching restaurant data:', error);
+      }
+    };
+
+    fetchRestaurantData();
+  }, [restaurantId]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
@@ -262,6 +293,11 @@ const bookTable = async () => {
   
   return (
     <View style={styles.listContainer}>
+         {restaurantImage ? (
+        <ImageBackground source={{ uri: restaurantImage }} style={styles.imageBackground} />
+      ) : (
+        <Text>Loading background image...</Text>
+      )}
       <FlatList
         data={restaurantData}
         renderItem={({ item }) => (
@@ -295,7 +331,7 @@ const bookTable = async () => {
                 <FlatList
                   data={item.tableData}
                   renderItem={({ item: tableItem }) => (
-                    <View style={styles.tableItem}>
+                    <View style={styles.tableItme}>
                       <Text>Table Number: {tableItem.table}</Text>
                       <Text>Capacity: {tableItem.Capacity}</Text>
                       {selectedDateTime ? (
@@ -313,9 +349,9 @@ const bookTable = async () => {
                           />
                         </View>
                       ) : (
-                        <View>
+                        <View style={styles.booking}>
                           <TouchableOpacity onPress={() => showDatePicker(tableItem)}>
-                            <Text>{selectedDateTime ? 'Edit Date & Time' : 'Pick Date & Time'}</Text>
+                            <Text>  {selectedDateTime ? 'Edit Booking' : 'Pick a Time & Date'}</Text>
                           </TouchableOpacity>
                         </View>
                       )}
@@ -350,22 +386,42 @@ const bookTable = async () => {
 }
 
 const styles = StyleSheet.create({
+  listContainer: {
+    flex:1,   
+    justifyContent: 'center',
+    backgroundColor:'black'
+  },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+   
+
+  },
+  imageBackground: {
+    height: 180,
+    resizeMode: "cover",
   },
   noDataContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor:'green'
   },
-  listContainer: {
-    top: 40,
-  },
+  
   itemContainer: {
-    width: '80%',
-    marginLeft: 10,
+    paddingTop:10,
+    flex:1,
+    //backgroundColor:'red',
+    paddingHorizontal: 12,
+    paddingBottom:10,
+    
+  },
+  tableItem: {
+     marginVertical: 10,
+    //flex:1,
+    paddingBottom:10,
+    backgroundColor:'blue'
   },
   itemContent: {
     flexDirection: 'row',
@@ -390,8 +446,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    width: 200,
+    width: '50%',
     height: 100,
+
     marginRight: 20,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
@@ -412,16 +469,23 @@ const styles = StyleSheet.create({
     zIndex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 58,
+    marginLeft: 38,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
   },
+  booking:{
+      backgroundColor:'#90ffff',
+      height: 30,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius:15,
+      paddingHorizontal:2,
+      
+  },
   reservationDetailsText: {
     fontWeight: 'bold',
   },
-  tableItem: {
-    marginVertical: 10,
-  },
+ 
 });

@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.0)', // Add a semi-transparent black overlay
+    backgroundColor: 'green', // Add a semi-transparent black overlay
     //justifyContent: 'center',
     alignItems: 'center',
     zIndex: 2, // Ensure the overlay is above the background image

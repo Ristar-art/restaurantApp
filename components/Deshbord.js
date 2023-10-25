@@ -39,31 +39,68 @@ export default function DeshBord() {
     navigation.navigate('RestaurantsDisplay', { restaurantId, collectionName });
   };
 
-  const renderItem = ({ item, index }) => (
-    <TouchableOpacity onPress={() => handleRestaurantPress(item.id, item.data().subCollection)}>
-      <View>
-        {loading ? (
-          // Display a loading indicator while fetching data
-          <Text>Loading...</Text>
-        ) : (
-          // Render the image if not loading
-          <Image source={{ uri: item.data().imageurl }} style={styles.starImage} />
-        )}
-        <View style={styles.areaCountContainer}>
-          <Text style={styles.areaCountText}>{item.data().number}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
+  const handleImagePress = (item) => {
+    if (item && item.data) {     
+      handleRestaurantPress(item.id, item.data().subCollection);
+    }
+  };
 
   return (
     <View style={styles.cardContainer}>
       <View style={styles.card}>
-        <FlatList
+      <FlatList
+          showsVerticalScrollIndicator={false}
           data={restaurants}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleImagePress(item)}>
+              <View
+                style={{
+                  height: 250,
+                  width: 150,
+                  borderRadius: 32,
+                  backgroundColor: "transparent",
+                  alignItems: "center",
+                  marginBottom: 20,
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    marginTop: 30,
+                    height: 180,
+                    width: 140,
+                    borderRadius: 30,
+                  }}
+                >
+                  <Image
+                    source={{ uri: item.data().imageurl }}
+                    style={{ flex: 1, borderRadius: 30 }}
+                  />
+                </View>
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{ color: "white", fontSize: 16, fontWeight: "bold" }}
+                  >
+                    {item.data().subCollection}
+                  </Text>
+                  <Text style={{ color: "gray", fontSize: 16 }}>
+                    {item.data().number}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id.toString()}
           numColumns={2}
+          columnWrapperStyle={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+          }}
         />
       </View>
     </View>
@@ -73,7 +110,6 @@ export default function DeshBord() {
 const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
-    bottom: 0,
   },
   card: {
     backgroundColor: 'white',

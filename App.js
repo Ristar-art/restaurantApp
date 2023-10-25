@@ -17,15 +17,16 @@ import TableScreen from './components/Table';
 import userRoleReducer from './components/userRoleSlice';
 import ProfilePictureScreen from './components/Profile';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet, Image,Dimensions,SafeAreaView } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore'; // Corrected import
 //import { auth, storage } from './firebaseConfig';
 //import { setIsLoggedIn, setIsLoading } from './authSlice';
 import AuthSection from './AuthSection';
-
+import GlobalStyles from './GlobalStyles';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
+const windowWidth = Dimensions.get('window').width;
 
 const store = configureStore({
   reducer: {
@@ -36,25 +37,7 @@ const store = configureStore({
   },
 });
 
-const styles = StyleSheet.create({
-  picture: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    //backgroundColor: '#f5f5f5', // Background color for the whole screen
-  },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 100,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-    backgroundColor: 'blue'
-  },
-});
+
 
 function CustomDrawerContent(props) {
   const [userData, setUserData] = useState({});
@@ -86,7 +69,7 @@ function CustomDrawerContent(props) {
         {hasProfileImage ? (
           <Image source={{ uri: userData.profileImage }} style={styles.image} />
         ) : (
-          <Text>No Profile Image</Text>
+          <Text></Text>
         )}
       </View>
 
@@ -112,7 +95,6 @@ function CustomDrawerContent(props) {
 
 
 function DrawerNavigator() {
-
   return (
     <Drawer.Navigator initialRouteName="Home" drawerContent={(props) => <CustomDrawerContent {...props} />}>
       <Drawer.Screen name="Home" component={Home} />
@@ -122,23 +104,51 @@ function DrawerNavigator() {
   );
 }
 
+
 export default function MainApp() {
-
-
   return (
     <Provider store={store}>
-      <AuthSection/>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="DrawerNavigator" screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
-          <Stack.Screen name="Login" component={LoginPage} />
-          <Stack.Screen name="Signup" component={SignUpForm} />
-          <Stack.Screen name="deshbord" component={DeshBord} />
-          <Stack.Screen name="RestaurantsDisplay" component={RestaurantsDisplay} />
-          <Stack.Screen name="restaurantview" component={RestaurantView} />
-          <Stack.Screen name="table" component={TableScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      
+        <AuthSection/>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="DrawerNavigator" screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
+            <Stack.Screen name="Login" component={LoginPage} />
+            <Stack.Screen name="Signup" component={SignUpForm} />
+            <Stack.Screen name="deshbord" component={DeshBord} />
+            <Stack.Screen name="RestaurantsDisplay" component={RestaurantsDisplay} />
+            <Stack.Screen name="restaurantview" component={RestaurantView} />
+            <Stack.Screen name="table" component={TableScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      
     </Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  picture: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    //backgroundColor: '#f5f5f5', // Background color for the whole screen
+  },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    backgroundColor: 'blue'
+  },
+});
+

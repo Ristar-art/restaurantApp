@@ -1,26 +1,75 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { setIsLoggedIn, setIsLoading } from '../authSlice';
-import BackgroundImage from './BackgroundImage';
-import { auth, storage } from '../firebaseConfig';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import * as ImagePicker from 'expo-image-picker';
-import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, setDoc,getStorage } from 'firebase/firestore';
-import { ref, uploadBytes,getDownloadURL } from 'firebase/storage';
+import React, { useEffect, useState } from "react";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  ImageBackground,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { setIsLoggedIn, setIsLoading } from "../authSlice";
 
+import { auth } from "../firebaseConfig";
 
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+
+import "firebase/firestore";
+
+function isURL(str) {
+  const pattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+  return pattern.test(str);
+}
 
 export default function Home({ navigation }) {
-
   const dispatch = useDispatch();
-  const { isLoggedIn, isLoading } = useSelector(state => state.auth);
-  const userRole = useSelector(state => state.userRole); 
+  const { isLoggedIn, isLoading } = useSelector((state) => state.auth);
+  const userRole = useSelector((state) => state.userRole);
+
+  const [restaurants, setRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
+    const db = getFirestore();
+    const dataRef = collection(db, "DATA");
+
+    getDocs(dataRef)
+      .then((snapshot) => {
+        if (!snapshot.empty) {
+          const validRestaurants = snapshot.docs.filter((doc) => {
+            const imageUrl = doc.data().imageurl;
+            return imageUrl && isURL(imageUrl); // Check if imageurl is present and a valid URL
+          });
+
+          setRestaurants(validRestaurants);
+        } else {
+          console.log("Firestore collection is empty.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error retrieving data from Firestore:", error);
+      })
+      .finally(() => {
+        setLoading(false); // Mark loading as complete
+      });
+  }, []);
+
+  const handleRestaurantPress = (restaurantId, collectionName) => {
+    navigation.navigate("RestaurantsDisplay", { restaurantId, collectionName });
+  };
+  const handleImagePress = (item) => {
+    if (item && item.data) {
+     
+      handleRestaurantPress(item.id, item.data().subCollection);
+    }
+  };
+  
+  
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       dispatch(setIsLoggedIn(!!user));
       dispatch(setIsLoading(false));
     });
@@ -34,41 +83,164 @@ export default function Home({ navigation }) {
     return <Text>Loading...</Text>;
   }
 
-  const isAdmin = isLoggedIn && userRole === 'admin';
-
-
-  const images = [
-    'https://www.blessthismessplease.com/wp-content/uploads/2017/02/DSC_8887-2.jpg',
-    'https://hips.hearstapps.com/hmg-prod/images/california-grilled-chicken-index-647a382d5880c.jpg?crop=0.502xw:1.00xh;0.260xw,0&resize=640:*',
-    'https://assets.epicurious.com/photos/566af1a508cf542b399e1457/1:1/w_775%2Cc_limit/EP_12112015_garlicsoup.jpg',
-  ];
-
-  const handleImagePress = () => {
-    console.log('handleImagePress function is called');
-    console.log('isLoggedIn is:', isLoggedIn, 'isAdmin is:', isAdmin); // Add this line
-    if (isLoggedIn) {
-      console.log('Navigating to admin panel');
-      // if (isAdmin) {
-      //   navigation.navigate('admin'); // Navigate to AdminPanel for admins
-      // } else {
-      //   // Handle access denied for non-admin users
-      //   alert('You do not have permission to access this feature.');
-      // }
-      navigation.navigate('admin')
-    } else {
-      // Handle access denied for not logged-in users
-      alert('You need to log in to access this feature.');
-      navigation.navigate('Login');
-    }
-  };
-
-  
   return (
     <View style={styles.container}>
-      <BackgroundImage />
-     
+      <ImageBackground
+        source={{
+          uri: "https://i.guim.co.uk/img/media/c956027ec764b4dabc490b4bf9993627a79f3d6c/228_436_5416_3250/master/5416.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=bc8fbc29ea344e298c44568ffd9f8ad8",
+        }}
+        style={styles.imageBackground}
+      ></ImageBackground>
+
+      <View style={styles.TotalPirceAndTaxes}>
+        <View style={styles.subtotal}>
+          <Text style={styles.subtotal}>Populer Restaurents</Text>
+        </View>
+        <View style={styles.taxes}>
+          <TouchableOpacity onPress={() => navigation.navigate("deshbord")}>
+            <Text style={styles.subtotal}>View more</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <View style={styles.cardContainer}>
-        <View style={styles.card}>
+      <FlatList
+          showsVerticalScrollIndicator={false}
+          data={restaurants}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleImagePress(item)}>
+              <View
+                style={{
+                  height: 250,
+                  width: 150,
+                  borderRadius: 32,
+                  backgroundColor: "transparent",
+                  alignItems: "center",
+                  marginBottom: 20,
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    marginTop: 30,
+                    height: 180,
+                    width: 140,
+                    borderRadius: 30,
+                  }}
+                >
+                  <Image
+                    source={{ uri: item.data().imageurl }}
+                    style={{ flex: 1, borderRadius: 30 }}
+                  />
+                </View>
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{ color: "white", fontSize: 16, fontWeight: "bold" }}
+                  >
+                    {item.data().subCollection}
+                  </Text>
+                  <Text style={{ color: "gray", fontSize: 16 }}>
+                    {item.data().number}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+          }}
+        />
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  imageBackground: {
+    height: 180,
+    resizeMode: "cover",
+  },
+  subtotal: {
+    color: "white",
+  },
+  cardContainer: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "black",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  profile: {
+    position: "absolute",
+    top: 0,
+    left: 280,
+    zIndex: 2,
+    backgroundColor: "brown",
+    width: 70,
+    height: 70,
+    alignItems: "center",
+    borderRadius: 50,
+  },
+  card: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    marginBottom: 20,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  cardText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    top: 0,
+  },
+  smallerText: {
+    marginBottom: 10,
+  },
+  cardExplanation: {
+    fontSize: 12,
+    top: 0,
+  },
+  starsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  spaceBetween: {
+    padding: 20,
+  },
+  starImage: {
+    width: 110,
+    height: 100,
+    resizeMode: "contain",
+  },
+  TotalPirceAndTaxes: {
+    height: 50,
+    width: "100%",
+    backgroundColor: "black",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 70,
+    alignItems: "center",
+  },
+
+  // Add your other styles here
+});
+
+{
+  /* <View style={styles.card}>
           <Text style={styles.cardText}>The last Supper</Text>
           <View style={styles.smallerText}>
             <Text style={styles.cardExplanation}>Eat my flesh, and drink my blood.</Text>
@@ -83,95 +255,34 @@ export default function Home({ navigation }) {
             <Text style={styles.cardExplanation}>6000</Text>
           </View>
           
-        </View>
-      </View>
-
-      <View style={styles.cardContainer2}>
-        <View style={styles.card}>
-          <View style={styles.starsContainer}>
-            {images.map((image, index) => (
-              <TouchableOpacity key={index} onPress={() => navigation.navigate('deshbord')}>
-                <Image source={{ uri: image }} style={styles.starImage} />
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.starsContainer}>
-        <View style={styles.spaceBetween}>
-          <Icon name="home" size={60} color="white" />
-        </View>
-        <View style={styles.spaceBetween}>
-          <Icon name="globe" size={60} color="gold" />
-        </View>
-        <View style={styles.spaceBetween}>
-          <Icon name="star" size={60} color="gray"  />
-        </View>
-        <View style={styles.spaceBetween}>
-          <Icon name="user" size={60} color="gray" onPress={() => navigation.navigate('profile')} />
-        </View>
-      </View>
-    </View>
-  );
+        </View> */
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+//   <View style={styles.cardContainer2}>
+//   <View style={styles.card}>
+//     <View style={styles.starsContainer}>
+//       {images.map((image, index) => (
+//         <TouchableOpacity key={index} onPress={() => navigation.navigate('deshbord')}>
+//           <Image source={{ uri: image }} style={styles.starImage} />
+//         </TouchableOpacity>
+//       ))}
+//     </View>
+//   </View>
+// </View>
 
-  cardContainer: {
-    position: 'absolute',
-    top: 172,
-    left: 50,
-    right: 50,
-
-    alignItems: 'center',
-    maxWidth: 350,
-  },
-  profile:{
-    position: 'absolute',
-    top: 0,   
-    left: 280,
-    zIndex:2,
-    backgroundColor:'brown',
-    width:70,
-    height:70,
-    alignItems: 'center',
-    borderRadius: 50
-  },
-  card: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  cardText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    top: 0,
-  },
-  smallerText: {
-    marginBottom: 10,
-  },
-  cardExplanation: {
-    fontSize: 12,
-    top: 0,
-  },
-  starsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  spaceBetween: {
-    padding: 20,
-  },
-  starImage: {
-    width: 110,
-    height: 100,
-    resizeMode: 'contain',
-  },
-});
+{
+  /* <View style={styles.starsContainer}>
+<View style={styles.spaceBetween}>
+  <Icon name="home" size={60} color="white" />
+</View>
+<View style={styles.spaceBetween}>
+  <Icon name="globe" size={60} color="gold" />
+</View>
+<View style={styles.spaceBetween}>
+  <Icon name="star" size={60} color="gray"  />
+</View>
+<View style={styles.spaceBetween}>
+  <Icon name="user" size={60} color="gray" onPress={() => navigation.navigate('profile')} />
+</View>
+</View> */
+}
