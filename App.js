@@ -24,6 +24,10 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore'; // Corrected imp
 //import { setIsLoggedIn, setIsLoading } from './authSlice';
 import AuthSection from './AuthSection';
 import GlobalStyles from './GlobalStyles';
+import ChooseTable from './components/ChooseTable';
+import ConfirmBooking from './components/ConfirmBooking'
+import Status from './components/Status';
+import manageRestaurant from './components/manageRestaurant';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 const windowWidth = Dimensions.get('window').width;
@@ -83,6 +87,10 @@ function CustomDrawerContent(props) {
         onPress={() => props.navigation.navigate('profile')} // Ensure 'profile' matches the screen name
       />
       <DrawerItem
+        label="Status"
+        onPress={() => props.navigation.navigate('Status')} 
+      />
+      <DrawerItem
         label="Admin"
         onPress={() => props.navigation.navigate('Admin')} 
       />
@@ -100,6 +108,7 @@ function DrawerNavigator() {
       <Drawer.Screen name="Home" component={Home} />
       <Drawer.Screen name="profile" component={ProfilePictureScreen} options={{ headerShown: false }} />
       <Drawer.Screen name="Admin" component={AdminPanel} options={{ headerShown: false }} />
+      <Drawer.Screen name="Status" component={Status} options={{ headerShown: false }} />
     </Drawer.Navigator>
   );
 }
@@ -119,6 +128,12 @@ export default function MainApp() {
             <Stack.Screen name="RestaurantsDisplay" component={RestaurantsDisplay} />
             <Stack.Screen name="restaurantview" component={RestaurantView} />
             <Stack.Screen name="table" component={TableScreen} />
+            <Stack.Screen name="ChooseTable" component={ChooseTable} />
+            <Stack.Screen name="ConfirmBooking" component={ConfirmBooking} />
+           <Stack.Screen name="manageRestaurant" component={manageRestaurant} />
+            
+
+            
           </Stack.Navigator>
         </NavigationContainer>
       

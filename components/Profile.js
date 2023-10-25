@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../firebaseConfig';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const ProfilePictureScreen = ({ navigation }) => {
   const [image, setImage] = useState(null);
@@ -13,42 +11,33 @@ const ProfilePictureScreen = ({ navigation }) => {
   const [user, setUser] = useState(null); // Define the user variable
 
   useEffect(() => {
-    (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work.');
-        }
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
     const auth = getAuth();
-    const currentUser = auth.currentUser; // Get the current user
-  
-    if (currentUser) {
-      setUser(currentUser); // Set the user variable
-      const firestore = getFirestore();
-      const userProfileRef = doc(firestore, 'Profile', currentUser.uid);
-      
-      getDoc(userProfileRef)
-        .then((docSnapshot) => {
-          if (docSnapshot.exists()) {
-            setUserData(docSnapshot.data());
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching user data:', error);
-        });
-    }
-  }, []); 
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user); // Set the user variable
+        const firestore = getFirestore();
+        const userProfileRef = doc(firestore, 'Profile', user.uid);
+
+        getDoc(userProfileRef)
+          .then((docSnapshot) => {
+            if (docSnapshot.exists()) {
+              setUserData(docSnapshot.data());
+            }
+          })
+          .catch((error) => {
+            console.error('Error fetching user data:', error);
+          });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return unsubscribe; // Unsubscribe when component unmounts
+  }, []);
 
   const toggleEditDropDown = () => {
     setEditDropDown(!editDropDown);
   };
-
-  const hasProfileImage = userData.profileImage;
 
   const pickImage = async () => {
     try {
@@ -60,7 +49,7 @@ const ProfilePictureScreen = ({ navigation }) => {
       });
 
       if (!result.cancelled) {
-        setImage(result.assets[0].uri);
+        setImage(result.uri);
       }
     } catch (error) {
       console.error('Error picking an image:', error);
@@ -104,7 +93,7 @@ const ProfilePictureScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.picture}>
-        {hasProfileImage ? (
+        {userData.profileImage ? (
           <Image source={{ uri: userData.profileImage }} style={styles.image} />
         ) : image ? (
           <Image source={{ uri: image }} style={styles.image} />
@@ -194,6 +183,14 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     textDecorationLine: 'underline',
   },
+  profileField: {
+    height:60,
+    backgroundColor:'green',
+    width:'80%',
+    borderRadius:10,
+    padding:5,
+    borderWidth: 1,
+  }
 });
 
 export default ProfilePictureScreen;

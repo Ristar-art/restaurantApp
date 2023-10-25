@@ -110,6 +110,7 @@ export default function DeshBord() {
 const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
+    backgroundColor: 'white',
   },
   card: {
     backgroundColor: 'white',
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     right: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'white',
     padding: 5,
     borderTopLeftRadius: 5,
     borderBottomRightRadius: 5,

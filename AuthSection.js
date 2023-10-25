@@ -48,8 +48,8 @@ function AuthSection() {
     //   return <UserContent />;
     // }
   } else {
-    // Render content for not logged in users
-    return <Text>User not logged in.</Text>;
+    // // Render content for not logged in users
+    // return <Text>User not logged in.</Text>;
   }
 }
 
