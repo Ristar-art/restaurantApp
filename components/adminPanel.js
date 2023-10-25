@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList ,TouchableOpacity} from 'react-native';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 
-const AdminPanel = () => {
+const AdminPanel = ({ navigation }) => {
   const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const AdminPanel = () => {
       />
       </View>
        <View >
-       <TouchableOpacity onPress={() => navigation.navigate('ChooseTable')}>
+       <TouchableOpacity onPress={() => navigation.navigate('manageRestaurant')}>
         <Text style={styles.Btn}> Manage the Restaurant </Text>
        </TouchableOpacity>
 
