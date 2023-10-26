@@ -27,7 +27,9 @@ import GlobalStyles from './GlobalStyles';
 import ChooseTable from './components/ChooseTable';
 import ConfirmBooking from './components/ConfirmBooking'
 import Status from './components/Status';
-import manageRestaurant from './components/manageRestaurant';
+import ManageRestaurant from './components/ManageRestaurant';
+import AddArestaurant from './components/AddArestaurant';
+import ChooseAreaImage from './components/ChooseAreaImage';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 const windowWidth = Dimensions.get('window').width;
@@ -130,9 +132,11 @@ export default function MainApp() {
             <Stack.Screen name="table" component={TableScreen} />
             <Stack.Screen name="ChooseTable" component={ChooseTable} />
             <Stack.Screen name="ConfirmBooking" component={ConfirmBooking} />
-           <Stack.Screen name="manageRestaurant" component={manageRestaurant} />
+            <Stack.Screen name="ManageRestaurant" component={ManageRestaurant} />
+            <Stack.Screen name="AddArestaurant" component={AddArestaurant} />
+            <Stack.Screen name="ChooseAreaImage" component={ChooseAreaImage} />
             
-
+            
             
           </Stack.Navigator>
         </NavigationContainer>

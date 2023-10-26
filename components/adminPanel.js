@@ -49,11 +49,18 @@ const AdminPanel = ({ navigation }) => {
         )}
       />
       </View>
-       <View >
-       <TouchableOpacity onPress={() => navigation.navigate('manageRestaurant')}>
+       <View style={styles.management}>
+
+        <View>
+        <TouchableOpacity onPress={() => navigation.navigate('AddArestaurant')}>
+        <Text style={styles.Btn}> Add A Restaurant </Text>
+       </TouchableOpacity>
+    
+        </View>
+       <TouchableOpacity onPress={() => navigation.navigate('ManageRestaurant')}>
         <Text style={styles.Btn}> Manage the Restaurant </Text>
        </TouchableOpacity>
-
+    
        </View>
       
       
@@ -90,6 +97,10 @@ const styles = StyleSheet.create({
     borderRadius:10,
     padding:5,
     borderWidth: 1,
+  },
+  management:{
+    flexDirection:'row',
+    justifyContent: "space-between",
   }
 });
 

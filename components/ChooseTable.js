@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   datePickerButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: '#90ffff',
+    backgroundColor: 'gray',
     borderRadius: 5,
   },
   buttonText: {
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 20,
     margin: 10,
-    backgroundColor: '#90ffff',
+    backgroundColor: 'gray',
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderRadius: 5,

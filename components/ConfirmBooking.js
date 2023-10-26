@@ -70,20 +70,38 @@ const ConfirmBooking = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Booking Details</Text>
-      {userData && (
+      <View style={styles.cart}>
+        <View style={styles.SmallCart}>
+        {userData && (
         <View>
-          <Text style={styles.buttonText}> {userData.firstName}</Text>
-          <Text style={styles.buttonText}>{userData.email}</Text>
+          <Text style={styles.buttonText1}> Hi  {userData.firstName}</Text>
+          <Text style={styles.buttonText1}> You have made booking at:</Text>
+         
+         
         </View>
       )}
-      <Text style={styles.buttonText}>Restaurant: {collectionName}</Text>
-      <Text style={styles.buttonText}>Table: {tableNumber}</Text>
-      <Text style={styles.buttonText}>Date: {formattedDate}</Text>
-      <Text style={styles.buttonText}>Time: {formattedTime}</Text>
+
+        </View>
+        <Text style={styles.buttonText}> {collectionName}</Text>
+      <Text style={styles.buttonText}> Table: {tableNumber}</Text>
+      <Text style={styles.buttonText}> Date: {formattedDate}</Text>
+      <Text style={styles.buttonText}> Time: {formattedTime}</Text>
+      
+
+      </View>
+      
+     
+      
 
       <TouchableOpacity onPress={handleConfirmBooking} style={styles.confirmButton}>
         <Text style={styles.buttonText}>Confirm Booking</Text>
       </TouchableOpacity>
+
+      {userData && (
+        <View>         
+          <Text style={styles.buttonText}>{userData.email}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -104,14 +122,36 @@ const styles = StyleSheet.create({
   confirmButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: '#90ffff',
+    backgroundColor: 'gray',
     borderRadius: 5,
+  },
+  buttonText1: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    paddingTop:10,
+    paddingBottom:30
   },
   buttonText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'black',
+    paddingTop:10,
+    paddingBottom:20
   },
+  cart:{
+    height:300,
+    width:'61%',
+    backgroundColor:'white',
+    borderRadius:5,
+  },
+  SmallCart:{
+    height:100,
+    width:'100%',
+    backgroundColor:'gray',
+    borderTopLeftRadius:5,
+    borderTopRightRadius:5
+  }
 });
 
 export default ConfirmBooking;

@@ -112,12 +112,12 @@ export default function RestaurantsDisplay() {
             <View style={styles.text}>
               <Text>{item.address}</Text>
             </View>
-            <View style={styles.text}>
+            {/* <View style={styles.text}>
               <Text>{item.rating}</Text>
             </View>
             <View style={styles.text}>
               <Text>{item.ratedPeople}</Text>
-            </View>
+            </View> */}
           </View>
         </View>
       </View>

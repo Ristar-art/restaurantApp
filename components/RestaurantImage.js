@@ -24,7 +24,7 @@ import * as ImagePicker from "expo-image-picker";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebaseConfig";
 
-const ManageRestaurant = () => {
+const manageRestaurant = () => {
   const [subCollectionName, setSubCollectionName] = useState("");
   const [subCollectionNames, setSubCollectionNames] = useState([]);
   const [imageURL, setImageURL] = useState("");
@@ -239,25 +239,26 @@ const ManageRestaurant = () => {
 
   return (
     <View style={styles.Container}>
+   
+        <>
+          
+
+          <TextInput
+            style={styles.inputField}
+            placeholder="Enter number of restaurants"
+            value={number}
+            onChangeText={(text) => setNumber(text)}
+          />
+
+          <TouchableOpacity style={styles.button} onPress={pickRestaurantImage}>
+            <Text style={styles.buttonText}>Choose Restaurant Image</Text>
+          </TouchableOpacity>
+
+          </>
+     
+
       
-      <View style={styles.cart}>
-      <FlatList
-          data={subCollectionNames}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleRestaurantPress(item)}>
-              <View  >
-                <Text style={styles.buttonText}>{item}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-       
-      </View>
-      <View style={styles.instruction}>
-      <Text style={styles.buttonText}>Press(scroll) on any of the name to view the Restaurant</Text>
-          </View>
-        
+
      
     </View>
   );
@@ -271,15 +272,6 @@ const styles = StyleSheet.create({
     top: 40,
     backgroundColor: "black",
   },
-  
-  cart:{
-    height:300,
-    width:'61%',
-    backgroundColor:'gray',
-    borderRadius:5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   button: {
     backgroundColor: "blue",
     padding: 10,
@@ -290,8 +282,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "bold",
-   
-    },
+  },
   inputField: {
     height:60,
     backgroundColor:'green',
@@ -299,16 +290,7 @@ const styles = StyleSheet.create({
     borderRadius:10,
     padding:5,
     borderWidth: 1,
-  },
-  instruction:{
-    height:60,
-    backgroundColor:'gray',
-    width:'80%',
-    borderRadius:10,
-    padding:5,
-    borderWidth: 5,
-   
   }
 });
 
-export default ManageRestaurant;
+export default manageRestaurant;

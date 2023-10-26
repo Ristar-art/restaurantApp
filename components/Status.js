@@ -9,6 +9,7 @@ import { storage } from '../firebaseConfig';
 const Status = ({ navigation }) => {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [reservationData, setReservationData] = useState(null);
 
   useEffect(() => {
     const auth = getAuth();
@@ -28,6 +29,18 @@ const Status = ({ navigation }) => {
         .catch((error) => {
           console.error('Error fetching user data:', error);
         });
+
+      const reservationsRef = doc(firestore, 'Reservations', currentUser.uid);
+
+      getDoc(reservationsRef)
+        .then((docSnapshot) => {
+          if (docSnapshot.exists()) {
+            setReservationData(docSnapshot.data());
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching reservation data:', error);
+        });
     }
   }, []);
 
@@ -46,17 +59,32 @@ const Status = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.cart}>
+        {userData && (
+          <View>
+            <Text style={styles.buttonText}>Hi {userData.firstName}</Text>
+            {/* <Text style={styles.buttonText}> {userData.email}</Text> */}
+          </View>
+        )}
 
-{userData && (
-        <View style={styles.StatusField}>
-          <Text style={styles.buttonText}>{userData.firstName}</Text>
-          <Text style={styles.buttonText}> {userData.email}</Text>          
-        </View>
-      )}
-      <Text>Can you confirm your Arrival</Text>
+        {reservationData && (
+          <View>
+           
+            <Text style={styles.buttonText}> On {reservationData.date}</Text>
+            <Text style={styles.label}> You made a reservation at: </Text>
+            <Text style={styles.buttonText}> {reservationData.time}</Text>
+            <Text style={styles.buttonText}> Can you confirm your Arrival</Text>
+          </View>
+        )}
+      </View>
+
+      <View style={styles.button}>
       <TouchableOpacity onPress={handleConfirmArrival}>
-        <Text>Confirm Arrival</Text>
+        <Text style={styles.btnText}>Confirm Arrival</Text>
       </TouchableOpacity>
+        
+      </View>
+      
     </View>
   );
 };
@@ -66,7 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'black',
   },
   StatusField: {
     height:60,
@@ -75,7 +103,41 @@ const styles = StyleSheet.create({
     borderRadius:10,
     padding:5,
     borderWidth: 1,
-  }
+  },
+  button: {
+    height:60,
+    backgroundColor:'gray',
+    flexDirection:'row',
+    borderRadius:10,
+    padding:5,
+    borderWidth: 5,
+    alignItems:'center'
+  }, 
+  cart:{
+    height:300,
+    width:'61%',
+    backgroundColor:'gray',
+    borderRadius:5,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+    paddingTop:10,
+    paddingBottom:20
+  },
+  btnText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+    
+    
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+  },
 });
 
 export default Status;

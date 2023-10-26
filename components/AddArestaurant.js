@@ -24,7 +24,7 @@ import * as ImagePicker from "expo-image-picker";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebaseConfig";
 
-const ManageRestaurant = () => {
+const AddArestaurant= () => {
   const [subCollectionName, setSubCollectionName] = useState("");
   const [subCollectionNames, setSubCollectionNames] = useState([]);
   const [imageURL, setImageURL] = useState("");
@@ -120,7 +120,7 @@ const ManageRestaurant = () => {
       });
 
       const parentId = newDocRef.id;
-
+      console.log('parentId is: ',parentId)
       if (image) {
         const response = await fetch(image);
         const blob = await response.blob();
@@ -202,7 +202,7 @@ const ManageRestaurant = () => {
       // await fetchDocuments();
 
       setParentId(parentId);
-      fetchSubCollectionNames();
+    //  fetchSubCollectionNames();
       setSubCollectionName("");
       setImage("");
       setNumber("");
@@ -212,9 +212,9 @@ const ManageRestaurant = () => {
     }
   };
 
-  useEffect(() => {
-    fetchSubCollectionNames();
-  }, []);
+//   useEffect(() => {
+//     fetchSubCollectionNames();
+//   }, []);
 
   const handleRestaurantPress = async (item) => {
     try {
@@ -239,26 +239,74 @@ const ManageRestaurant = () => {
 
   return (
     <View style={styles.Container}>
-      
-      <View style={styles.cart}>
-      <FlatList
-          data={subCollectionNames}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleRestaurantPress(item)}>
-              <View  >
-                <Text style={styles.buttonText}>{item}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-       
-      </View>
-      <View style={styles.instruction}>
-      <Text style={styles.buttonText}>Press(scroll) on any of the name to view the Restaurant</Text>
-          </View>
-        
+  
+        <>
+          <TextInput 
+            style={styles.inputField}
+            placeholder="Enter Restaurant name"
+            value={subCollectionName}
+            onChangeText={(text) => setSubCollectionName(text)}
+          />
+
+          <TouchableOpacity style={styles.button} onPress={pickImage}>
+            <Text style={styles.buttonText}>Choose Image</Text>
+          </TouchableOpacity>
+
+          <TextInput
+            style={styles.inputField}
+            placeholder="Enter number of restaurants"
+            value={number}
+            onChangeText={(text) => setNumber(text)}
+          />
+
+          <TouchableOpacity style={styles.button} onPress={pickRestaurantImage}>
+            <Text style={styles.buttonText}>Choose Restaurant Image</Text>
+          </TouchableOpacity>
+
+          <TextInput
+            style={styles.inputField}
+            placeholder="Select an address"
+            value={restarentAddress}
+            onChangeText={(text) => setRestarentAddress(text)}
+           //style={styles.addressDropdown}
+          />
+
+          <TextInput
+            placeholder="Select a Subaddress"
+            value={subAddress}
+            onChangeText={(text) => setSubAddress(text)}
+            style={styles.inputField}
+          />
+
+          <TextInput
+            placeholder="state number of seats"
+            value={seatsNumber}
+            onChangeText={(text) => setSeatsNumber(text)}
+            style={styles.inputField}
+          />
+
+          <TextInput
+            placeholder="Table Capacity"
+            value={capacity}
+            onChangeText={(text) => setCapacity(text)}
+            style={styles.inputField}
+          />
+
+          <TextInput
+            placeholder="Table Number"
+            value={tableNumber}
+            onChangeText={(text) => setTableNumber(text)}
+            style={styles.inputField}
+          />
+
+          <TouchableOpacity style={styles.button} onPress={addSubCollectionName}>
+            <Text style={styles.buttonText}>Add a restaurant</Text>
+          </TouchableOpacity>
+        </>
      
+
+
+    
     </View>
   );
 };
@@ -271,15 +319,6 @@ const styles = StyleSheet.create({
     top: 40,
     backgroundColor: "black",
   },
-  
-  cart:{
-    height:300,
-    width:'61%',
-    backgroundColor:'gray',
-    borderRadius:5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   button: {
     backgroundColor: "blue",
     padding: 10,
@@ -290,8 +329,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "bold",
-   
-    },
+  },
   inputField: {
     height:60,
     backgroundColor:'green',
@@ -299,16 +337,7 @@ const styles = StyleSheet.create({
     borderRadius:10,
     padding:5,
     borderWidth: 1,
-  },
-  instruction:{
-    height:60,
-    backgroundColor:'gray',
-    width:'80%',
-    borderRadius:10,
-    padding:5,
-    borderWidth: 5,
-   
   }
 });
 
-export default ManageRestaurant;
+export default AddArestaurant;
