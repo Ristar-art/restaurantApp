@@ -27,9 +27,9 @@ import GlobalStyles from './GlobalStyles';
 import ChooseTable from './components/ChooseTable';
 import ConfirmBooking from './components/ConfirmBooking'
 import Status from './components/Status';
-import ManageRestaurant from './components/ManageRestaurant';
 import AddArestaurant from './components/AddArestaurant';
 import ChooseAreaImage from './components/ChooseAreaImage';
+import ManageRestaurant from './components/manageRestaurant';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 const windowWidth = Dimensions.get('window').width;
