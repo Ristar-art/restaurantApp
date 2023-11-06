@@ -44,19 +44,14 @@ const AdminPanel = ({ navigation }) => {
             <Text>Table: {item.table}</Text>
             <Text>Date: {item.date}</Text>
             <Text>Time: {item.time}</Text>
-            <Text>Status: {item.status ? 'Arrived' : 'Yet to Arrive'}</Text>
+            <Text>Status: {item.status ? 'Arrived' : 'Yet to Arrive' } </Text>
           </View>
         )}
       />
       </View>
        <View style={styles.management}>
 
-        <View>
-        <TouchableOpacity onPress={() => navigation.navigate('AddArestaurant')}>
-        <Text style={styles.Btn}> Add A Restaurant </Text>
-       </TouchableOpacity>
-    
-        </View>
+       
        <TouchableOpacity onPress={() => navigation.navigate('ManageRestaurant')}>
         <Text style={styles.Btn}> Manage the Restaurant </Text>
        </TouchableOpacity>
@@ -71,9 +66,11 @@ const AdminPanel = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    backgroundColor: 'red',
+   // alignItems: 'center',
     justifyContent: 'center',
+    // width:'100%',
+    // height:'100%'
   },
   header: {
     fontSize: 24,
@@ -84,8 +81,10 @@ const styles = StyleSheet.create({
   reservationContainer: {
     borderWidth: 1,
     borderColor: '#000',
-    padding: 10,
+    //padding: 10,
     marginVertical: 5,
+    borderRadius:5,
+    //width: '80%'
   },
   reservation:{
     flex:1,
@@ -101,6 +100,7 @@ const styles = StyleSheet.create({
   management:{
     flexDirection:'row',
     justifyContent: "space-between",
+    flex:1
   }
 });
 

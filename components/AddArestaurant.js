@@ -160,10 +160,7 @@ const AddArestaurant= () => {
         const imageUrl = await getDownloadURL(storageRef);
 
         // Check if newResraurentDocRef exists before attempting to update
-        if (newResraurentDocRef) {
-          const url = await updateDoc(newResraurentDocRef, {
-            restImageurl: imageUrl,
-          });
+        if (newResraurentDocRef) { const url = await updateDoc(newResraurentDocRef, { restImageurl: imageUrl, });
           console.log("url is: ", url);
         } else {
           console.error("newResraurentDocRef is null. Image not updated.");

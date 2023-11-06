@@ -23,18 +23,21 @@ import {
   addDoc,
   deleteDoc,
 } from "firebase/firestore";
-import * as ImagePicker from "expo-image-picker";
+
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebaseConfig";
-
 import { useRoute } from "@react-navigation/native";
-
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native"; // Import navigation hooks
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+
+
+
 const RestaurantView = () => {
+
   const [documentData, setDocumentData] = useState([]);
   const route = useRoute();
   const [newFieldName, setNewFieldName] = useState(""); // State to hold the new field name
@@ -47,9 +50,12 @@ const RestaurantView = () => {
   const [showAddFieldDropdown, setShowAddFieldDropdown] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [selectTable, setSelectTable] = useState("");
+  const [selectAddress, setSelectAddress] = useState("");
+  const [selectCapacity, setSelectCapacity] = useState("");
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [restaurantImage, setRestaurantImage] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -63,27 +69,7 @@ const RestaurantView = () => {
     })();
   }, []);
 
-  const pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.cancelled) {
-        const imageUri = result.uri;
-        const imageRef = ref(storage, "images/" + result.uri);
-        const imageSnapshot = await uploadBytes(imageRef, imageUri);
-        const imageUrl = await getDownloadURL(imageSnapshot.ref);
-
-        setImage(imageUrl);
-      }
-    } catch (error) {
-      console.error("Error picking an image:", error);
-    }
-  };
+  
 
   useEffect(() => {
     const firestore = getFirestore();
@@ -223,48 +209,92 @@ const RestaurantView = () => {
   const handleCreateNewDocument = async () => {
     setShowAddressDropdown(true);
   };
+  const pickRestaurantImage = async () => {
+  try {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-  const handleAddressSelection = async () => {
-    try {
-      const firestore = getFirestore();
-
-      // Check if a valid address is selected
-      if (selectedAddress && selectTable) {
-        // Construct a reference to the sub-collection
-        const subCollectionRef = collection(
-          firestore,
-          "DATA",
-          parentId,
-          subCollectionName
-        );
-
-        // Add a new document to the sub-collection with an auto-generated ID and the selected address
-        const newDocRef = await addDoc(subCollectionRef, {
-          address: selectTable,
-          name: subCollectionName,
-          subcollection: selectedAddress,
-        });
-
-        console.log("New document created successfully with ID:", newDocRef.id);
-        const subcollectionRef = collection(newDocRef, selectedAddress);
-
-        // Automatically generate an ID for the document under subCollectionRef
-        await addDoc(subcollectionRef, {
-          // You can add any fields here
-          address: selectTable,
-        });
-        await fetchDocuments();
-
-        // Hide the address dropdown
-        setShowAddressDropdown(false);
-      } else {
-        console.error("Invalid address selected.");
-      }
-    } catch (error) {
-      console.error("Error creating a new document:", error);
+    if (!result.canceled) {
+      setRestaurantImage(result.assets[0].uri);
     }
-  };
+  } catch (error) {
+    console.error("Error picking a restaurant image:", error);
+  }
+};
 
+const handleAddressSelection = async () => {
+  try {
+    await pickRestaurantImage();
+    await CreateArestaurent();
+  } catch (error) {
+    console.error("Error handling address selection:", error);
+  }
+};
+
+const CreateArestaurent = async () => {
+  try {
+    const firestore = getFirestore();
+    if (selectedAddress && selectTable) {
+      const subCollectionRef = collection(
+        firestore,
+        "DATA",
+        parentId,
+        subCollectionName
+      );
+
+      const newDocRef = await addDoc(subCollectionRef, {
+        address: selectTable,
+        name: subCollectionName,
+        subcollection: selectedAddress,
+      });
+
+      const restaurantId = newDocRef.id;
+      console.log('restaurantId is: ',restaurantId)
+      console.log("restaurantImage is ", restaurantImage);
+      if (restaurantImage) {
+        const response = await fetch(restaurantImage);
+        const blob = await response.blob();
+        const storageRef = ref(
+          storage,
+          `AddressRestaurantImages/${restaurantId}`
+        );
+        await uploadBytes(storageRef, blob);
+
+        const imageUrl = await getDownloadURL(storageRef);
+
+        if (newDocRef) {
+          const url = await updateDoc(newDocRef, { restImageurl: imageUrl,  });
+          console.log("url is: ", url);
+        } else {
+          console.error("newDocRef is null. Image not updated.");
+        }
+      } else {
+        console.warn("restaurantImage is null. Image not updated.");
+      }
+
+      const subcollectionRef = collection(newDocRef, selectedAddress);
+     
+      await addDoc(subcollectionRef, {
+        address: selectAddress,
+        available: true,
+        Capacity: selectCapacity,
+        table: selectTable,
+      });
+      await fetchDocuments();
+      setShowAddressDropdown(false);
+    } else {
+      console.error("Invalid address selected.");
+    }
+  } catch (error) {
+    console.error("Error creating a new document:", error);
+  }
+};
+
+  
   const fetchDocuments = async () => {
     try {
       const firestore = getFirestore();
@@ -489,23 +519,36 @@ const RestaurantView = () => {
           <Text style={styles.fieldLabel}>Address:</Text>
 
           <TextInput
-            placeholder="Select an address"
+            placeholder="Select a name"
             value={selectedAddress}
             onChangeText={(text) => setSelectedAddress(text)} // Update this line
             style={styles.addressDropdown}
           />
           <TextInput
-            placeholder="Select a table"
+            placeholder="Select an address"
+            value={selectAddress}
+            onChangeText={(text) => setSelectAddress(text)} // Update this line
+            style={styles.addressDropdown}
+          />
+          <TextInput
+            placeholder="Select a Table"
             value={selectTable}
             onChangeText={(text) => setSelectTable(text)} // Update this line
+            style={styles.addressDropdown}
+          />
+          <TextInput
+            placeholder="Select Table Capacity"
+            value={selectCapacity}
+            onChangeText={(text) => setSelectCapacity(text)} // Update this line
             style={styles.addressDropdown}
           />
           <TouchableOpacity
             onPress={handleAddressSelection}
             style={styles.addressSelectionButton}
+           
           >
             <AntDesign name="addfolder" size={24} color="black" />
-            <Text style={styles.addressSelectionButtonText}>
+            <Text style={styles.addressSelectionButtonText}  >
               Create Document
             </Text>
           </TouchableOpacity>
@@ -516,7 +559,7 @@ const RestaurantView = () => {
           style={styles.createNewDocumentButton}
         >
           <AntDesign name="addfolder" size={24} color="black" />
-          <Text style={styles.createNewDocumentButtonText}>
+          <Text style={styles.createNewDocumentButtonText} >
             Create New Document
           </Text>
         </TouchableOpacity>

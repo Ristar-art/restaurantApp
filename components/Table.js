@@ -44,7 +44,7 @@ const TableScreen = () => {
   const tablecollectioName = TableData.subcollection;
   console.log("tablecollectioName is: ", tablecollectioName);
   const [documentData, setDocumentData] = useState([]);
-
+  const [selectCapacity, setSelectCapacity] = useState("");
   const [newFieldName, setNewFieldName] = useState(""); // State to hold the new field name
   const [newFieldValue, setNewFieldValue] = useState(""); // State to hold the new field value
   const [selectedDocumentId, setSelectedDocumentId] = useState(null); // State to hold the selected document ID
@@ -53,7 +53,7 @@ const TableScreen = () => {
   const [showAddFieldDropdown, setShowAddFieldDropdown] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(""); // State to hold the selected address
   const [selectTable, setSelectTable] = useState("");
-  const navigation = useNavigation();
+  
 
   useEffect(() => {
     const firestore = getFirestore();
@@ -146,7 +146,12 @@ const TableScreen = () => {
       console.error("No document or field selected for edit.");
       return;
     }
-
+  
+    if (selectedFieldName === "restImageUrl") {
+      console.error("Editing restImageUrl field is not allowed.");
+      return;
+    }
+  
     try {
       const firestore = getFirestore();
       const docRef = doc(
@@ -159,12 +164,12 @@ const TableScreen = () => {
         selectedDocumentId
       );
       const docPath = docRef.path;
-
+  
       // Check if the document path exists without fetching data
       const docSnapshot = await getDoc(docRef);
       console.log("docSnapshot is: ", docSnapshot);
       if (docSnapshot.exists()) {
-        // The document path exists, proceed with updateshnbm
+        // The document path exists, proceed with updates
         console.log("The document exists.");
         const fieldToUpdate = {};
         fieldToUpdate[selectedFieldName] = newFieldValue; // Update the field with the new value
@@ -174,17 +179,17 @@ const TableScreen = () => {
           "with new value:",
           newFieldValue
         );
-
+  
         // Update the document with the edited field
         await updateDoc(docRef, fieldToUpdate);
-
+  
         // Refresh the document list after editing
         await fetchDocuments();
-
+  
         // Clear the input fields after editing the field
         setSelectedFieldName("");
         setNewFieldValue("");
-
+  
         console.log("Field edited successfully.");
       } else {
         console.log("Document does not exist:", docPath);
@@ -193,7 +198,7 @@ const TableScreen = () => {
       console.error("Error editing field:", error);
     }
   };
-
+  
   const handleCreateNewDocument = async () => {
     setShowAddressDropdown(true);
   };
@@ -217,8 +222,11 @@ const TableScreen = () => {
         // Add a new document to the sub-collection with an auto-generated ID and the selected address
         const newDocRef = await addDoc(subCollectionRef, {
           address: selectedAddress,
-          avilable: true,
+          available: true,
           table: selectTable,
+          Capacity:selectCapacity
+
+
         });
 
         console.log("New document created successfully with ID:", newDocRef.id);
@@ -255,6 +263,7 @@ const TableScreen = () => {
       console.error("Error deleting document:", error);
     }
   };
+  
 
   const fetchDocuments = async () => {
     try {
@@ -333,63 +342,70 @@ const TableScreen = () => {
     <View style={styles.container}>
       <Text style={styles.header}>{subCollectionName} Tables</Text>
       <FlatList
-        data={documentData} // Pass your document data to the FlatList
-        keyExtractor={(item) => item.id} // Specify a unique key for each item
+        data={documentData}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View key={item.id} style={styles.documentContainer}>
             {Object.keys(item.data).map((fieldName) => (
-              <View key={fieldName} style={styles.fieldItem}>
-                <Text style={styles.fieldLabel}>{fieldName}:</Text>
-                {fieldName === selectedFieldName ? ( // Render input field for editing
-                  <TextInput
-                    style={styles.fieldInput}
-                    value={newFieldValue}
-                    onChangeText={setNewFieldValue}
-                    placeholder={`Edit ${fieldName}`}
-                  />
-                ) : (
-                  <Text style={styles.fieldValue}>{item.data[fieldName]}</Text>
+              <React.Fragment key={fieldName}>
+                {fieldName !== "restImageUrl" && (
+                  <>
+                    <Text style={styles.fieldLabel}>{fieldName}:</Text>
+                    {fieldName === selectedFieldName && (
+                      <TextInput
+                        style={styles.fieldInput}
+                        value={newFieldValue}
+                        onChangeText={setNewFieldValue}
+                        placeholder={`Edit ${fieldName}`}
+                      />
+                    )}
+                    {fieldName !== selectedFieldName && (
+                      <Text style={styles.fieldValue}>
+                        {item.data[fieldName]}
+                      </Text>
+                    )}
+                    {fieldName !== selectedFieldName && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setSelectedDocumentId(item.id);
+                          setSelectedFieldName(fieldName);
+                          setNewFieldValue(item.data[fieldName]);
+                        }}
+                        style={styles.editFieldButton}
+                      >
+                        <AntDesign name="edit" size={24} color="black" />
+                      </TouchableOpacity>
+                    )}
+                    {fieldName === selectedFieldName && (
+                      <TouchableOpacity
+                        onPress={handleEditField}
+                        style={styles.saveFieldButton}
+                      >
+                        <Text style={styles.saveFieldButtonText}>Save</Text>
+                      </TouchableOpacity>
+                    )}
+                    {fieldName === selectedFieldName && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setSelectedFieldName("");
+                          setNewFieldValue("");
+                        }}
+                        style={styles.cancelFieldButton}
+                      >
+                        <Text style={styles.cancelFieldButtonText}>Cancel</Text>
+                      </TouchableOpacity>
+                    )}
+                    {fieldName !== "restImageUrl" && (
+                      <TouchableOpacity
+                        onPress={() => handleDeleteField(item.id, fieldName)}
+                        style={styles.deleteFieldButton}
+                      >
+                        <AntDesign name="delete" size={24} color="black" />
+                      </TouchableOpacity>
+                    )}
+                  </>
                 )}
-                {fieldName !== selectedFieldName && ( // Render "Edit Field" button for non-selected fields
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedDocumentId(item.id);
-                      setSelectedFieldName(fieldName);
-                      setNewFieldValue(item.data[fieldName]);
-                    }}
-                    style={styles.editFieldButton}
-                  >
-                    <AntDesign name="edit" size={24} color="black" />
-                    {/* <Text style={styles.editFieldButtonText}>Edit </Text> */}
-                  </TouchableOpacity>
-                )}
-                {fieldName === selectedFieldName && ( // Render "Save" button for selected field
-                  <TouchableOpacity
-                    onPress={handleEditField}
-                    style={styles.saveFieldButton}
-                  >
-                    <Text style={styles.saveFieldButtonText}>Save</Text>
-                  </TouchableOpacity>
-                )}
-                {fieldName === selectedFieldName && ( // Render "Cancel" button for selected field
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedFieldName("");
-                      setNewFieldValue("");
-                    }}
-                    style={styles.cancelFieldButton}
-                  >
-                    <Text style={styles.cancelFieldButtonText}>Cancel</Text>
-                  </TouchableOpacity>
-                )}
-                <TouchableOpacity
-                  onPress={() => handleDeleteField(item.id, fieldName)}
-                  style={styles.deleteFieldButton}
-                >
-                  <AntDesign name="delete" size={24} color="black" />
-                  {/* <Text style={styles.deleteFieldButtonText}>Delete </Text> */}
-                </TouchableOpacity>
-              </View>
+              </React.Fragment>
             ))}
             <TouchableOpacity
               onPress={() => handleDeleteDocument(item.id)}
@@ -441,7 +457,6 @@ const TableScreen = () => {
         </TouchableOpacity>
       )}
 
-      {/* Create a new document button */}
       {showAddressDropdown ? (
         <View style={styles.addressDropdownContainer}>
           <Text style={styles.fieldLabel}>Address:</Text>
@@ -449,13 +464,19 @@ const TableScreen = () => {
           <TextInput
             placeholder="Select an address"
             value={selectedAddress}
-            onChangeText={(text) => setSelectedAddress(text)} // Update this line
+            onChangeText={(text) => setSelectedAddress(text)}
             style={styles.addressDropdown}
           />
           <TextInput
             placeholder="Select a table number"
             value={selectTable}
-            onChangeText={(text) => setSelectTable(text)} // Update this line
+            onChangeText={(text) => setSelectTable(text)}
+            style={styles.addressDropdown}
+          />
+          <TextInput
+            placeholder="Select table Capacity"
+            value={selectCapacity}
+            onChangeText={(text) => setSelectCapacity(text)}
             style={styles.addressDropdown}
           />
           <TouchableOpacity
@@ -481,6 +502,7 @@ const TableScreen = () => {
       )}
     </View>
   );
+
 };
 const styles = StyleSheet.create({
   container: {

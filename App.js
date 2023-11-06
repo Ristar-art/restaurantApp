@@ -17,7 +17,7 @@ import TableScreen from './components/Table';
 import userRoleReducer from './components/userRoleSlice';
 import ProfilePictureScreen from './components/Profile';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { Text, View, StyleSheet, Image,Dimensions,SafeAreaView } from 'react-native';
+import { Text, View, StyleSheet, Image,Dimensions, SafeAreaView } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore'; // Corrected import
 //import { auth, storage } from './firebaseConfig';
@@ -27,9 +27,10 @@ import GlobalStyles from './GlobalStyles';
 import ChooseTable from './components/ChooseTable';
 import ConfirmBooking from './components/ConfirmBooking'
 import Status from './components/Status';
-import ManageRestaurant from './components/ManageRestaurant';
+
 import AddArestaurant from './components/AddArestaurant';
 import ChooseAreaImage from './components/ChooseAreaImage';
+import ManageRestaurant from './components/manageRestaurant';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 const windowWidth = Dimensions.get('window').width;
@@ -49,6 +50,7 @@ function CustomDrawerContent(props) {
   const [userData, setUserData] = useState({});
   const auth = getAuth();
   const user = auth.currentUser;
+  const allowedEmail = "mochochokoboiketlo@gmail.com"; 
 
   useEffect(() => {
     if (user) {
@@ -68,7 +70,9 @@ function CustomDrawerContent(props) {
   }, [user]);
   const hasProfileImage = userData.profileImage;
 
+  const canAccessAdminPanel = user && user.email === allowedEmail; 
   return (
+  
     <DrawerContentScrollView {...props}>
       {/* Your profile picture */}
       <View style={styles.picture}>
@@ -92,12 +96,15 @@ function CustomDrawerContent(props) {
         label="Status"
         onPress={() => props.navigation.navigate('Status')} 
       />
-      <DrawerItem
-        label="Admin"
-        onPress={() => props.navigation.navigate('Admin')} 
-      />
+      {canAccessAdminPanel && ( // Only show the Admin panel if the user's email matches the allowed email
+        <DrawerItem
+          label="Admin"
+          onPress={() => props.navigation.navigate('Admin')} 
+        />
+      )}
       {/* Add more DrawerItems for other navigation options as needed */}
     </DrawerContentScrollView>
+   
   );
 }
 
@@ -106,12 +113,19 @@ function CustomDrawerContent(props) {
 
 function DrawerNavigator() {
   return (
+   
+
     <Drawer.Navigator initialRouteName="Home" drawerContent={(props) => <CustomDrawerContent {...props} />}>
+          
       <Drawer.Screen name="Home" component={Home} />
       <Drawer.Screen name="profile" component={ProfilePictureScreen} options={{ headerShown: false }} />
       <Drawer.Screen name="Admin" component={AdminPanel} options={{ headerShown: false }} />
       <Drawer.Screen name="Status" component={Status} options={{ headerShown: false }} />
+     
     </Drawer.Navigator>
+    
+   
+    
   );
 }
 
@@ -135,10 +149,7 @@ export default function MainApp() {
             <Stack.Screen name="ManageRestaurant" component={ManageRestaurant} />
             <Stack.Screen name="AddArestaurant" component={AddArestaurant} />
             <Stack.Screen name="ChooseAreaImage" component={ChooseAreaImage} />
-            
-            
-            
-          </Stack.Navigator>
+           </Stack.Navigator>
         </NavigationContainer>
       
     </Provider>
@@ -148,7 +159,8 @@ export default function MainApp() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'red',
+    
+    //backgroundColor: 'red',
     alignItems: 'center',
     justifyContent: 'center',
   },

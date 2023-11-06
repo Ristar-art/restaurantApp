@@ -239,26 +239,29 @@ const ManageRestaurant = () => {
 
   return (
     <View style={styles.Container}>
-      
       <View style={styles.cart}>
-      <FlatList
+        <FlatList
           data={subCollectionNames}
           keyExtractor={(item) => item}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleRestaurantPress(item)}>
-              <View  >
+              <View>
                 <Text style={styles.buttonText}>{item}</Text>
               </View>
             </TouchableOpacity>
           )}
         />
-       
+        <View style={styles.instruction}>
+          <Text style={styles.buttonText}>
+            Press(scroll) on the names to view the Restaurant
+          </Text>
+        </View>
       </View>
-      <View style={styles.instruction}>
-      <Text style={styles.buttonText}>Press(scroll) on any of the name to view the Restaurant</Text>
-          </View>
-        
-     
+      <View style={styles.btn}>
+        <TouchableOpacity onPress={() => navigation.navigate("AddArestaurant")}>
+          <Text style={styles.buttonText}> Add A Restaurant </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -271,12 +274,12 @@ const styles = StyleSheet.create({
     top: 40,
     backgroundColor: "black",
   },
-  
-  cart:{
-    height:300,
-    width:'61%',
-    backgroundColor:'gray',
-    borderRadius:5,
+
+  cart: {
+    height: 300,
+    width: "61%",
+    backgroundColor: "gray",
+    borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -285,30 +288,36 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5,
     borderRadius: 5,
-    width:'80%',
+    width: "80%",
   },
   buttonText: {
     color: "white",
     fontWeight: "bold",
-   
-    },
+  },
   inputField: {
-    height:60,
-    backgroundColor:'green',
-    width:'80%',
-    borderRadius:10,
-    padding:5,
+    height: 60,
+    backgroundColor: "green",
+    width: "80%",
+    borderRadius: 10,
+    padding: 5,
     borderWidth: 1,
   },
-  instruction:{
-    height:60,
-    backgroundColor:'gray',
-    width:'80%',
-    borderRadius:10,
-    padding:5,
+  instruction: {
+    height: 60,
+    backgroundColor: "gray",
+    width: "80%",
+    borderRadius: 10,
+    padding: 5,
+    // borderWidth: 5,
+  },
+  btn: {
+    height: 60,
+    backgroundColor: "green",
+    width: "80%",
+    borderRadius: 10,
+    padding: 5,
     borderWidth: 5,
-   
-  }
+  },
 });
 
 export default ManageRestaurant;
