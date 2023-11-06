@@ -10,7 +10,7 @@ import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 const AdminPanel = ({ navigation }) => {
   const [reservations, setReservations] = useState([]);
-
+  
   useEffect(() => {
     const fetchReservations = async () => {
       try {
@@ -95,9 +95,15 @@ const AdminPanel = ({ navigation }) => {
         <TouchableOpacity
           onPress={() => navigation.navigate("ManageRestaurant")}
         >
-          <Text style={{ borderTopLeftRadius: 10,borderTopRightRadius: 10, fontSize: 2 * 16, color: "white" }}>
-            {" "}
-            Manage the Restaurant{" "}
+          <Text
+            style={{
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+              fontSize: 2 * 16,
+              color: "white",
+            }}
+          >
+            Manage the Restaurant
           </Text>
         </TouchableOpacity>
       </View>
