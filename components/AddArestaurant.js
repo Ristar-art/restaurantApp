@@ -37,13 +37,12 @@ const AddArestaurant= () => {
   const dataCollectionRef = collection(firestore, "DATA");
   const [image, setImage] = useState(null);
   const [restaurantImage, setRestaurantImage] = useState(null);
-  const [lastSubcollection, setLastSubcollection] = useState("");
   const [subAddress, setSubAddress] = useState("");
   const [restarentAddress, setRestarentAddress] = useState("");
   const [capacity, setCapacity] = useState(null);
   const [seatsNumber, setSeatsNumber] = useState(null);
   const [tableNumber, setTableNumber] = useState(null);
-  const [peopleRating, setPeopleRating] = useState(null);
+  
 
   useEffect(() => {
     (async () => {
@@ -160,10 +159,7 @@ const AddArestaurant= () => {
         const imageUrl = await getDownloadURL(storageRef);
 
         // Check if newResraurentDocRef exists before attempting to update
-        if (newResraurentDocRef) {
-          const url = await updateDoc(newResraurentDocRef, {
-            restImageurl: imageUrl,
-          });
+        if (newResraurentDocRef) { const url = await updateDoc(newResraurentDocRef, { restImageurl: imageUrl, });
           console.log("url is: ", url);
         } else {
           console.error("newResraurentDocRef is null. Image not updated.");

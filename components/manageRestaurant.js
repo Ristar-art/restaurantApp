@@ -29,7 +29,6 @@ const ManageRestaurant = () => {
   const [subCollectionNames, setSubCollectionNames] = useState([]);
   const [imageURL, setImageURL] = useState("");
   const [number, setNumber] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
   const [parentId, setParentId] = useState("");
   const navigation = useNavigation();
   const firestore = getFirestore();
@@ -37,14 +36,33 @@ const ManageRestaurant = () => {
   const dataCollectionRef = collection(firestore, "DATA");
   const [image, setImage] = useState(null);
   const [restaurantImage, setRestaurantImage] = useState(null);
-  const [lastSubcollection, setLastSubcollection] = useState("");
   const [subAddress, setSubAddress] = useState("");
   const [restarentAddress, setRestarentAddress] = useState("");
   const [capacity, setCapacity] = useState(null);
   const [seatsNumber, setSeatsNumber] = useState(null);
   const [tableNumber, setTableNumber] = useState(null);
-  const [peopleRating, setPeopleRating] = useState(null);
+  const [component1Visible, setComponent1Visible] = useState(true);
+  const [component2Visible, setComponent2Visible] = useState(false);
+  const [component3Visible, setComponent3Visible] = useState(false);
+  const [component4Visible, setComponent4Visible] = useState(false);
+ 
+  const handleComponentA = () => {
+    setComponent1Visible(false);
+    setComponent2Visible(true);
+  };
 
+  const handleComponentB = () => {
+    setComponent1Visible(false);
+    setComponent2Visible(false);
+    setComponent3Visible(true);
+  };
+  const handleComponentC = () => {
+    setComponent1Visible(false);
+    setComponent2Visible(false);
+    setComponent3Visible(false);
+    setComponent4Visible(true);
+  };
+  
   useEffect(() => {
     (async () => {
       if (Platform.OS !== "web") {
@@ -68,6 +86,7 @@ const ManageRestaurant = () => {
 
       if (!result.cancelled) {
         setImage(result.assets[0].uri);
+        handleComponentB();
       }
     } catch (error) {
       console.error("Error picking an image:", error);
@@ -84,6 +103,7 @@ const ManageRestaurant = () => {
 
       if (!result.cancelled) {
         setRestaurantImage(result.assets[0].uri);
+        handleComponentC();
       }
     } catch (error) {
       console.error("Error picking a restaurant image:", error);
@@ -238,27 +258,141 @@ const ManageRestaurant = () => {
   };
 
   return (
-    <View style={styles.Container}>
-      
-      <View style={styles.cart}>
-      <FlatList
-          data={subCollectionNames}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleRestaurantPress(item)}>
-              <View  >
-                <Text style={styles.buttonText}>{item}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-       
-      </View>
-      <View style={styles.instruction}>
-      <Text style={styles.buttonText}>Press(scroll) on any of the name to view the Restaurant</Text>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        backgroundColor: "black",
+        alignItems: "center",
+        top: 40,
+      }}
+    >
+      {component1Visible && (
+        <>
+          <View style={styles.cart}>
+            <FlatList
+              data={subCollectionNames}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleRestaurantPress(item)}>
+                  <View>
+                    <Text style={styles.buttonText}>{item}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+            <View style={styles.instruction}>
+              <Text style={styles.buttonText}>
+                Press(scroll) on the names to view the Restaurant
+              </Text>
+            </View>
           </View>
-        
-     
+          <View style={styles.btn}>
+            <TouchableOpacity onPress={() => handleComponentA()}>
+              <Text style={styles.buttonText}> Add A Restaurant </Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+
+      {component2Visible && (
+        <>
+          <TextInput
+            style={styles.inputField}
+            placeholder="Enter Restaurant name"
+            value={subCollectionName}
+            onChangeText={(text) => setSubCollectionName(text)}
+          />
+
+          <TouchableOpacity
+            style={{
+              width: "80%",
+              height: "10%",
+              backgroundColor: "gray",
+              justifyContent: "center",
+              alignItems: "center",
+              
+            }}
+            onPress={pickImage}
+          >
+            <Text style={styles.buttonText}>Choose Image</Text>
+          </TouchableOpacity>
+        </>
+      )}
+      {component3Visible && (
+        <>
+          <TextInput
+            style={styles.inputField}
+            placeholder="Enter number of restaurants"
+            value={number}
+            onChangeText={(text) => setNumber(text)}
+          />
+
+          <TouchableOpacity style={{
+              width: "80%",
+              height: "10%",
+              backgroundColor: "gray",
+              justifyContent: "center",
+              alignItems: "center",
+              
+            }} onPress={pickRestaurantImage}>
+            <Text style={styles.buttonText}>Choose Restaurant Image</Text>
+          </TouchableOpacity>
+        </>
+      )}
+      {component4Visible && (
+        <>
+          <TextInput
+            style={styles.inputField}
+            placeholder="Select an address"
+            value={restarentAddress}
+            onChangeText={(text) => setRestarentAddress(text)}
+            //style={styles.addressDropdown}
+          />
+
+          <TextInput
+            placeholder="Select a Subaddress"
+            value={subAddress}
+            onChangeText={(text) => setSubAddress(text)}
+            style={styles.inputField}
+          />
+
+          <TextInput
+            placeholder="state number of seats"
+            value={seatsNumber}
+            onChangeText={(text) => setSeatsNumber(text)}
+            style={styles.inputField}
+          />
+
+          <TextInput
+            placeholder="Table Capacity"
+            value={capacity}
+            onChangeText={(text) => setCapacity(text)}
+            style={styles.inputField}
+          />
+
+          <TextInput
+            placeholder="Table Number"
+            value={tableNumber}
+            onChangeText={(text) => setTableNumber(text)}
+            style={styles.inputField}
+          />
+
+          <TouchableOpacity
+            style={{
+              width: "80%",
+              height: "10%",
+              backgroundColor: "gray",
+              justifyContent: "center",
+              alignItems: "center",
+              
+            }}
+            onPress={addSubCollectionName}
+          >
+            <Text style={styles.buttonText}>Add a restaurant</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   );
 };
@@ -271,12 +405,12 @@ const styles = StyleSheet.create({
     top: 40,
     backgroundColor: "black",
   },
-  
-  cart:{
-    height:300,
-    width:'61%',
-    backgroundColor:'gray',
-    borderRadius:5,
+
+  cart: {
+    height: 300,
+    width: "61%",
+    backgroundColor: "gray",
+    borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -285,30 +419,35 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5,
     borderRadius: 5,
-    width:'80%',
+    width: "80%",
   },
   buttonText: {
     color: "white",
     fontWeight: "bold",
-   
-    },
+  },
   inputField: {
-    height:60,
-    backgroundColor:'green',
-    width:'80%',
-    borderRadius:10,
-    padding:5,
+    height: 60,
+    backgroundColor: "green",
+    width: "80%",
+     padding: 5,
     borderWidth: 1,
   },
-  instruction:{
-    height:60,
-    backgroundColor:'gray',
-    width:'80%',
-    borderRadius:10,
-    padding:5,
+  instruction: {
+    height: 60,
+    backgroundColor: "gray",
+    width: "80%",
+    borderRadius: 10,
+    padding: 5,
+    // borderWidth: 5,
+  },
+  btn: {
+    height: 60,
+    backgroundColor: "green",
+    width: "80%",
+    borderRadius: 10,
+    padding: 5,
     borderWidth: 5,
-   
-  }
+  },
 });
 
 export default ManageRestaurant;
