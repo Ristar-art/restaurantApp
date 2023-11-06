@@ -238,7 +238,13 @@ const manageRestaurant = () => {
   };
 
   return (
-    <View style={styles.Container}>
+    <View style={{
+        flex: 1,
+        justifyContent: "center",
+        backgroundColor: "black",
+        alignItems: "center",
+        top: 40,
+      }}>
    
         <>
           

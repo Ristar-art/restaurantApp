@@ -62,14 +62,7 @@ const ManageRestaurant = () => {
     setComponent3Visible(false);
     setComponent4Visible(true);
   };
-  const handleComponentD = () => {
-    setComponent1Visible(false);
-    setComponent2Visible(false);
-    setComponent3Visible(false);
-    setComponent4Visible(false);
-    setComponent5Visible(true);
-  };
-
+  
   useEffect(() => {
     (async () => {
       if (Platform.OS !== "web") {

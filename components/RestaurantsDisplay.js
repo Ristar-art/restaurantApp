@@ -64,11 +64,11 @@ export default function RestaurantsDisplay() {
             const rating = doc.data().rating;
             const ratedPeople = doc.data().ratingNumber;
             const TablesubcollectionName = doc.data().subcollection;
-            const docId = doc.id; // Get the ID of the current document
+            const docId = doc.id; 
 
             if (imageUrl) {
               data.push({
-                id: docId, // Include the document ID in the data
+                id: docId,
                 imageUrl,
                 address,
                 rating,
