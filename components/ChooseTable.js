@@ -101,7 +101,7 @@ const ChooseTable = () => {
       style={{
         flex: 1,
         justifyContent: "center",
-        backgroundColor: "black",
+        backgroundColor: "white",
         alignItems: "center",
         top: 17,
       }}
@@ -109,6 +109,7 @@ const ChooseTable = () => {
       <View>
         <Text style={styles.header}>Choose a Table</Text>
         <FlatList
+         showsVerticalScrollIndicator={false}
           data={tableData}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 20,
     margin: 10,
-    backgroundColor: "gray",
+    backgroundColor: "white",
     flexDirection: "row",
     justifyContent: "space-between",
     borderRadius: 5,

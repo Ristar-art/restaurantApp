@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     top: 40,
-    backgroundColor: "black",
+    backgroundColor: "white",
   },
   button: {
     backgroundColor: "blue",

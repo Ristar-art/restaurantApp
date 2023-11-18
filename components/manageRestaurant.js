@@ -262,7 +262,7 @@ const ManageRestaurant = () => {
       style={{
         flex: 1,
         justifyContent: "center",
-        backgroundColor: "black",
+        backgroundColor: "white",
         alignItems: "center",
         top: 40,
       }}
@@ -306,11 +306,14 @@ const ManageRestaurant = () => {
 
           <TouchableOpacity
             style={{
-              width: "80%",
-              height: "10%",
-              backgroundColor: "gray",
+              width: 290,
+              height: 60,
+              backgroundColor: "white",
               justifyContent: "center",
               alignItems: "center",
+              borderRadius:5,
+              borderWidth: 1,
+
               
             }}
             onPress={pickImage}
@@ -329,11 +332,13 @@ const ManageRestaurant = () => {
           />
 
           <TouchableOpacity style={{
-              width: "80%",
-              height: "10%",
-              backgroundColor: "gray",
+              width: 290,
+              height: 60,
+              backgroundColor: "white",
               justifyContent: "center",
               alignItems: "center",
+              borderRadius:5,
+              borderWidth: 1,
               
             }} onPress={pickRestaurantImage}>
             <Text style={styles.buttonText}>Choose Restaurant Image</Text>
@@ -386,6 +391,7 @@ const ManageRestaurant = () => {
               justifyContent: "center",
               alignItems: "center",
               
+              
             }}
             onPress={addSubCollectionName}
           >
@@ -403,7 +409,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     top: 40,
-    backgroundColor: "black",
+    backgroundColor: "white",
   },
 
   cart: {
@@ -413,6 +419,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth:1
   },
   button: {
     backgroundColor: "blue",
@@ -422,14 +429,14 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   buttonText: {
-    color: "white",
+    color: "black",
     fontWeight: "bold",
   },
   inputField: {
     height: 60,
-    backgroundColor: "green",
+    backgroundColor: "white",
     width: "80%",
-     padding: 5,
+    padding: 5,
     borderWidth: 1,
   },
   instruction: {
@@ -442,11 +449,11 @@ const styles = StyleSheet.create({
   },
   btn: {
     height: 60,
-    backgroundColor: "green",
+    backgroundColor: "white",
     width: "80%",
     borderRadius: 10,
     padding: 5,
-    borderWidth: 5,
+    borderWidth: 1,
   },
 });
 

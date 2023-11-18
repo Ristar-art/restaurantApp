@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
     width: "100%",
-    backgroundColor: "black",
+    backgroundColor: "white",
     justifyContent: "space-between",
     alignItems: "center",
   },
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   TotalPirceAndTaxes: {
     height: 50,
     width: "100%",
-    backgroundColor: "black",
+    backgroundColor: "white",
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 70,

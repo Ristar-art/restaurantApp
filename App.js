@@ -112,22 +112,19 @@ function CustomDrawerContent(props) {
   );
 }
 
-
-
-
 function DrawerNavigator() {
   return (
    
+  <SafeAreaView  style ={{ flex:1,backgroundColor: 'red' }}>
 
-    <Drawer.Navigator initialRouteName="Home" drawerContent={(props) => <CustomDrawerContent {...props} />}>
-          
+<Drawer.Navigator initialRouteName="Home" drawerContent={(props) => <CustomDrawerContent {...props} />} >          
       <Drawer.Screen name="Home" component={Home} />
       <Drawer.Screen name="profile" component={ProfilePictureScreen} options={{ headerShown: false }} />
       <Drawer.Screen name="Admin" component={AdminPanel} options={{ headerShown: false }} />
-      <Drawer.Screen name="Status" component={Status} options={{ headerShown: false }} />
-     
-    </Drawer.Navigator>
-    
+      <Drawer.Screen name="Status" component={Status} options={{ headerShown: false }} />     
+    </Drawer.Navigator>  
+   
+  </SafeAreaView>
    
     
   );

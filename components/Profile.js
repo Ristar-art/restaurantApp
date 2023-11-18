@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: 'transparent',
-    width: '80%',
+    width: 290,
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginVertical: 10,

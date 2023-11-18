@@ -38,7 +38,7 @@ const AdminPanel = ({ navigation }) => {
   return (
     <View
       style={{
-        backgroundColor: "black",
+        backgroundColor: "white",
         justifyContent: "flext-start",
         flex: 1,
         flexDirection: "column",
@@ -72,7 +72,7 @@ const AdminPanel = ({ navigation }) => {
           data={reservations}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <View style={{ backgroundColor: "white", borderRadius: 5 }}>
+            <View style={{ backgroundColor: "white", borderRadius: 5, borderWidth:1, margin:10 }}>
               <Text>User Name: {item.userName}</Text>
               <Text>Restaurant: {item.restaurant}</Text>
               <Text>Table: {item.table}</Text>

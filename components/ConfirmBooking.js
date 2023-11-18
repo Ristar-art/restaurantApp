@@ -1,10 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { getFirestore, doc, updateDoc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  getFirestore,
+  doc,
+  updateDoc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const ConfirmBooking = ({ route }) => {
-  const { restaurantId, restaurantName, documentID, collectionName, tableNumber, tableId, date, time } = route.params;
+  const {
+    restaurantId,
+    restaurantName,
+    documentID,
+    collectionName,
+    tableNumber,
+    tableId,
+    date,
+    time,
+  } = route.params;
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
 
@@ -19,7 +35,7 @@ const ConfirmBooking = ({ route }) => {
     if (currentUser) {
       setUser(currentUser); // Set the user variable
       const firestore = getFirestore();
-      const userProfileRef = doc(firestore, 'Profile', currentUser.uid);
+      const userProfileRef = doc(firestore, "Profile", currentUser.uid);
 
       getDoc(userProfileRef)
         .then((docSnapshot) => {
@@ -28,7 +44,7 @@ const ConfirmBooking = ({ route }) => {
           }
         })
         .catch((error) => {
-          console.error('Error fetching user data:', error);
+          console.error("Error fetching user data:", error);
         });
     }
   }, []);
@@ -36,7 +52,8 @@ const ConfirmBooking = ({ route }) => {
   const handleConfirmBooking = async () => {
     try {
       if (userData && user) {
-        const reservationsRef = doc(db, 'Reservations', user.uid);
+        const reservationsRef = doc(db, "Reservations", user.uid);
+        
         const reservationData = {
           userName: userData.firstName,
           userEmail: userData.email,
@@ -46,10 +63,21 @@ const ConfirmBooking = ({ route }) => {
           time: formattedTime,
           status: false,
         };
-        await setDoc(reservationsRef, reservationData, { merge: true, timestamp: serverTimestamp() });
+        await setDoc(reservationsRef, reservationData, {
+          merge: true,
+          timestamp: serverTimestamp(),
+        });
       }
 
-      const docRef = doc(db, 'DATA', restaurantId, restaurantName, documentID, collectionName, tableId);
+      const docRef = doc(
+        db,
+        "DATA",
+        restaurantId,
+        restaurantName,
+        documentID,
+        collectionName,
+        tableId
+      );
       const docSnapshot = await getDoc(docRef);
       if (docSnapshot.exists()) {
         // The document exists, proceed with updates
@@ -58,12 +86,12 @@ const ConfirmBooking = ({ route }) => {
         // Update the document with the edited field
         await updateDoc(docRef, fieldToUpdate);
 
-        console.log('Booking confirmed. Table availability updated.');
+        console.log("Booking confirmed. Table availability updated.");
       } else {
-        console.log('Document does not exist.');
+        console.log("Document does not exist.");
       }
     } catch (error) {
-      console.error('Error updating table availability: ', error);
+      console.error("Error updating table availability: ", error);
     }
   };
 
@@ -72,33 +100,28 @@ const ConfirmBooking = ({ route }) => {
       <Text style={styles.header}>Booking Details</Text>
       <View style={styles.cart}>
         <View style={styles.SmallCart}>
-        {userData && (
-        <View>
-          <Text style={styles.buttonText1}> Hi  {userData.firstName}</Text>
-          <Text style={styles.buttonText1}> You have made booking at:</Text>
-         
-         
-        </View>
-      )}
-
+          {userData && (
+            <View>
+              <Text style={styles.buttonText1}> Hi {userData.firstName}</Text>
+              <Text style={styles.buttonText1}> You have made booking at:</Text>
+            </View>
+          )}
         </View>
         <Text style={styles.buttonText}> {collectionName}</Text>
-      <Text style={styles.buttonText}> Table: {tableNumber}</Text>
-      <Text style={styles.buttonText}> Date: {formattedDate}</Text>
-      <Text style={styles.buttonText}> Time: {formattedTime}</Text>
-      
-
+        <Text style={styles.buttonText}> Table: {tableNumber}</Text>
+        <Text style={styles.buttonText}> Date: {formattedDate}</Text>
+        <Text style={styles.buttonText}> Time: {formattedTime}</Text>
       </View>
-      
-     
-      
 
-      <TouchableOpacity onPress={handleConfirmBooking} style={styles.confirmButton}>
+      <TouchableOpacity
+        onPress={handleConfirmBooking}
+        style={styles.confirmButton}
+      >
         <Text style={styles.buttonText}>Confirm Booking</Text>
       </TouchableOpacity>
 
       {userData && (
-        <View>         
+        <View>
           <Text style={styles.buttonText}>{userData.email}</Text>
         </View>
       )}
@@ -109,49 +132,53 @@ const ConfirmBooking = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'black',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    color: 'white',
+    color: "white",
   },
   confirmButton: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: 'gray',
+    // marginTop: 20,
+    // padding: 10,
+    backgroundColor: "white",
     borderRadius: 5,
+    borderWidth:1,
+    height:60,
+    width:290
   },
   buttonText1: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-    paddingTop:10,
-    paddingBottom:30
+    fontWeight: "bold",
+    color: "white",
+    paddingTop: 10,
+    paddingBottom: 30,
   },
   buttonText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: 'black',
-    paddingTop:10,
-    paddingBottom:20
+    fontWeight: "bold",
+    color: "black",
+    paddingTop: 10,
+    paddingBottom: 20,
   },
-  cart:{
-    height:300,
-    width:'61%',
-    backgroundColor:'white',
-    borderRadius:5,
+  cart: {
+    height: 300,
+    width: "61%",
+    backgroundColor: "white",
+    borderRadius: 5,
+    borderWidth:1
   },
-  SmallCart:{
-    height:100,
-    width:'100%',
-    backgroundColor:'gray',
-    borderTopLeftRadius:5,
-    borderTopRightRadius:5
-  }
+  SmallCart: {
+    height: 100,
+    width: "100%",
+    backgroundColor: "gray",
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+  },
 });
 
 export default ConfirmBooking;

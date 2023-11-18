@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black',
+    backgroundColor: 'white',
   },
   StatusField: {
     height:60,
@@ -105,19 +105,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   button: {
+    width:290,
     height:60,
-    backgroundColor:'gray',
+    backgroundColor: 'white',
     flexDirection:'row',
     borderRadius:10,
     padding:5,
     borderWidth: 5,
-    alignItems:'center'
+    alignItems:'center',
+    borderWidth:1,
+   
   }, 
   cart:{
     height:300,
     width:'61%',
-    backgroundColor:'gray',
+    backgroundColor:'white',
     borderRadius:5,
+    borderWidth:1
   },
   buttonText: {
     fontSize: 18,
