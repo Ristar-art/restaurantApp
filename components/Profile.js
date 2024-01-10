@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#000',
+    borderColor: 'grey',
     alignItems: 'center',
   },
   buttonText: {
@@ -181,7 +181,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'blue',
     marginLeft: 5,
-    textDecorationLine: 'underline',
+   // textDecorationLine: 'underline',
+    
   },
   profileField: {
     height:60,

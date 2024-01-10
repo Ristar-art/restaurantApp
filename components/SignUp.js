@@ -86,14 +86,16 @@ const SignUpForm = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={{height:100}}>
+        <Text style={{ fontSize: 25,fontWeight:'bold'
+         }}>Welcome User</Text>
+      </View>
       <View style={styles.card}>
         <View style={styles.cardBody}>
           <Text style={styles.headerText}>Sign Up</Text>
           <View style={styles.formGroup}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputIcon}>
-                <Icon name="user" size={30} color="black" />
-              </Text>
+              
               <TextInput
                 style={styles.input}
                 placeholder="First Name"
@@ -104,9 +106,7 @@ const SignUpForm = ({ navigation }) => {
           </View>
           <View style={styles.formGroup}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputIcon}>
-                <Icon name="user" size={30} color="black" />
-              </Text>
+              
               <TextInput
                 style={styles.input}
                 placeholder="Last Name"
@@ -117,9 +117,7 @@ const SignUpForm = ({ navigation }) => {
           </View>
           <View style={styles.formGroup}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputIcon}>
-                <Icon name="envelope" size={30} color="black" />
-              </Text>
+            
               <TextInput
                 style={styles.input}
                 placeholder="Email"
@@ -130,9 +128,7 @@ const SignUpForm = ({ navigation }) => {
           </View>
           <View style={styles.formGroup}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputIcon}>
-                <Icon name="lock" size={30} color="black" />
-              </Text>
+             
               <TextInput
                 style={styles.input}
                 placeholder="Password"
@@ -142,11 +138,9 @@ const SignUpForm = ({ navigation }) => {
               />
             </View>
           </View>
-          <View style={styles.formGroup}>
+          {/* <View style={styles.formGroup}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputIcon}>
-                <Icon name="user" size={30} color="black" />
-              </Text>
+           
               <TextInput
                 style={styles.input}
                 placeholder="Role (admin or regularUser)"
@@ -154,7 +148,7 @@ const SignUpForm = ({ navigation }) => {
                 onChangeText={text => handleInputChange('role', text)}
               />
             </View>
-          </View>
+          </View> */}
           <View style={styles.formGroup}>
             <TouchableOpacity
               style={styles.signupButton}

@@ -53,7 +53,7 @@ const ConfirmBooking = ({ route }) => {
     try {
       if (userData && user) {
         const reservationsRef = doc(db, "Reservations", user.uid);
-        
+
         const reservationData = {
           userName: userData.firstName,
           userEmail: userData.email,
@@ -107,10 +107,42 @@ const ConfirmBooking = ({ route }) => {
             </View>
           )}
         </View>
+
         <Text style={styles.buttonText}> {collectionName}</Text>
-        <Text style={styles.buttonText}> Table: {tableNumber}</Text>
-        <Text style={styles.buttonText}> Date: {formattedDate}</Text>
-        <Text style={styles.buttonText}> Time: {formattedTime}</Text>
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            paddingHorizontal: 10,
+          }}
+        >
+          <Text style={styles.buttonText}>Table:</Text>
+          <Text style={styles.buttonText}> {tableNumber}</Text>
+        </View>
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            paddingHorizontal: 10,
+          }}
+        >
+          <Text style={styles.buttonText}>Date:</Text>
+          <Text style={styles.buttonText}>  {formattedDate}</Text>
+        </View>
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            paddingHorizontal: 10,
+          }}
+        >
+          <Text style={styles.buttonText}>Time:</Text>
+          <Text style={styles.buttonText}> Time: {formattedTime}</Text>
+        </View>
+        
       </View>
 
       <TouchableOpacity
@@ -143,13 +175,16 @@ const styles = StyleSheet.create({
     color: "white",
   },
   confirmButton: {
-    // marginTop: 20,
+     marginTop: 20,
     // padding: 10,
     backgroundColor: "white",
     borderRadius: 5,
-    borderWidth:1,
-    height:60,
-    width:290
+    borderWidth: 1,
+    height: 60,
+    width: "90%",
+    display:'flex',
+    justifyContent:"center",
+    alignItems:'center'
   },
   buttonText1: {
     fontSize: 18,
@@ -162,18 +197,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "black",
-    paddingTop: 10,
-    paddingBottom: 20,
+    //paddingTop: 10,
+    //paddingBottom: 20,
+    display: "flex",
+    justifyContent: "space-between",
   },
   cart: {
-    height: 300,
-    width: "61%",
+    height: 200,
+    width: "90%",
     backgroundColor: "white",
     borderRadius: 5,
-    borderWidth:1
+    borderWidth: 1,
+    borderColor: "grey",
+    border: 10,
   },
   SmallCart: {
-    height: 100,
+    height: 50,
     width: "100%",
     backgroundColor: "gray",
     borderTopLeftRadius: 5,

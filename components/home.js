@@ -61,12 +61,9 @@ export default function Home({ navigation }) {
   };
   const handleImagePress = (item) => {
     if (item && item.data) {
-     
       handleRestaurantPress(item.id, item.data().subCollection);
     }
   };
-  
-  
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -85,6 +82,47 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View
+        style={{
+          width: "100%",
+          height: 100,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          flexDirection: "row",
+          //backgroundColor:'grey'
+        }}
+      >
+        <View style={{
+          width: "60%",
+          height: 100,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexWrap: "wrap",
+         // backgroundColor:'grey'
+        }}><Text style={{ fontSize: 25, marginLeft:20, }}>
+          Book a table from the best local restaurent
+        </Text></View>
+        
+        <TouchableOpacity
+          style={{
+            marginRight: 20,
+            marginTop:15,
+            alignItems: "center",
+            justifyContent: "flex-start",
+            display: "flex",
+            padding:8,
+            //+backgroundColor:"red",
+            borderRadius:10,
+            borderWidth: 1 
+
+          }}
+          onPress={() => navigation.navigate('Login')}
+        >
+          <Text>Sign In</Text>
+        </TouchableOpacity>
+      </View>
       <ImageBackground
         source={{
           uri: "https://i.guim.co.uk/img/media/c956027ec764b4dabc490b4bf9993627a79f3d6c/228_436_5416_3250/master/5416.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=bc8fbc29ea344e298c44568ffd9f8ad8",
@@ -104,7 +142,7 @@ export default function Home({ navigation }) {
       </View>
 
       <View style={styles.cardContainer}>
-      <FlatList
+        <FlatList
           showsVerticalScrollIndicator={false}
           data={restaurants}
           renderItem={({ item }) => (
@@ -167,6 +205,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+    display: "flex",
+    justifyContent: "center",
   },
   imageBackground: {
     height: 180,

@@ -1,10 +1,16 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setIsLoggedIn, setEmail, setPassword, setLoading, setError } from './customAuthSilce';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { auth } from '../firebaseConfig';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setIsLoggedIn,
+  setEmail,
+  setPassword,
+  setLoading,
+  setError,
+} from "./customAuthSilce";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { auth } from "../firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginPage = ({ navigation }) => {
   const email = useSelector((state) => state.customAuth.email);
@@ -18,30 +24,33 @@ const LoginPage = ({ navigation }) => {
     const user = auth.currentUser;
     if (user) {
       // If the user is already logged in, navigate to 'Home'
-      navigation.navigate('Home');
+      navigation.navigate("Home");
     }
   }, [navigation]);
 
   const handleSubmit = async () => {
     dispatch(setLoading(true));
-  
+
     try {
       // Attempt to sign in the user
       await signInWithEmailAndPassword(auth, email, password);
       dispatch(setIsLoggedIn(true));
-      navigation.navigate('Home');
+      navigation.navigate("Home");
     } catch (error) {
-      console.error('Error during login:', error);
-      alert('An error occurred while logging in. Please try again later.');
+      console.error("Error during login:", error);
+      alert("An error occurred while logging in. Please try again later.");
       dispatch(setError(error.message));
     } finally {
       dispatch(setLoading(false));
     }
   };
-  
 
   return (
     <View style={styles.container}>
+      <View style={{height:100}}>
+        <Text style={{ fontSize: 25,fontWeight:'bold'
+         }}>Welcome Back</Text>
+      </View>
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Text style={styles.headerText}>Sign In</Text>
@@ -49,39 +58,34 @@ const LoginPage = ({ navigation }) => {
         <View style={styles.cardBody}>
           <View style={styles.formGroup}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputIcon}>
-                <Icon name="key" size={30} color="black" />
-              </Text>
+              
               <TextInput
-               style={styles.input}
-               placeholder="email"
-               value={email}
-               onChangeText={(value) => {     
-               dispatch(setEmail(value))}}
+                style={styles.input}
+                placeholder="email"
+                value={email}
+                onChangeText={(value) => {
+                  dispatch(setEmail(value));
+                }}
               />
             </View>
           </View>
           <View style={styles.formGroup}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputIcon}>
-                <Icon name="key" size={30} color="black" />
-              </Text>
+              
               <TextInput
-               style={styles.input}
-               placeholder="Password"
-               value={password}
-               onChangeText={(value) => {    
-               dispatch(setPassword(value))}}
-               secureTextEntry={true}
-               />
+                style={styles.input}
+                placeholder="Password"
+                value={password}
+                onChangeText={(value) => {
+                  dispatch(setPassword(value));
+                }}
+                secureTextEntry={true}
+              />
             </View>
           </View>
 
           <View style={styles.formGroup}>
-            <TouchableOpacity
-              style={styles.loginButton}
-              onPress={handleSubmit}
-            >
+            <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
               <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
           </View>
@@ -92,7 +96,7 @@ const LoginPage = ({ navigation }) => {
               Don't have an account?
               <Text
                 style={styles.signUpLink}
-                onPress={() => navigation.navigate('Signup')}
+                onPress={() => navigation.navigate("Signup")}
               >
                 Sign Up
               </Text>
@@ -104,43 +108,41 @@ const LoginPage = ({ navigation }) => {
   );
 };
 
-
 const styles = {
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-   
+    justifyContent: "center",
+    alignItems: "center",
   },
   card: {
     width: 300,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     padding: 20,
   },
   cardHeader: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   headerText: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   socialIconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '50%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "50%",
   },
   cardBody: {},
   formGroup: {
     marginBottom: 15,
   },
   inputGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     paddingHorizontal: 10,
   },
@@ -151,8 +153,8 @@ const styles = {
     flex: 1,
   },
   rememberRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 15,
   },
   checkbox: {
@@ -161,29 +163,29 @@ const styles = {
     marginRight: 10,
   },
   loginButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: "#007bff",
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 5,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
   },
   cardFooter: {
     borderTopWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     paddingTop: 20,
     marginTop: 20,
   },
   links: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 10,
   },
   signUpLink: {
-    color: 'blue',
+    color: "blue",
     marginLeft: 5,
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
   },
 };
 

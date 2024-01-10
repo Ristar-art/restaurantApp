@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
+    borderColor: 'grey'
   },
   text: {
     fontSize: 18,
