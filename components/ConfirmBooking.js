@@ -43,6 +43,7 @@ const ConfirmBooking = ({ route }) => {
             setUserData(docSnapshot.data());
           }
         })
+
         .catch((error) => {
           console.error("Error fetching user data:", error);
         });
@@ -96,14 +97,49 @@ const ConfirmBooking = ({ route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Booking Details</Text>
-      <View style={styles.cart}>
-        <View style={styles.SmallCart}>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text
+        style={{
+          fontSize: 24,
+          fontWeight: "bold",
+          marginBottom: 20,
+          color: "black",
+        }}
+      >
+        Booking Details
+      </Text>
+      <View
+        style={{
+          height: 200,
+          width: "90%",
+          // backgroundColor: "white",
+          borderRadius: 5,
+          borderWidth: 1,
+          borderColor: "black",
+          border: 10,
+        }}
+      >
+        <View
+          style={{
+            height: 100,
+            width: "100%",
+            //backgroundColor: "gray",
+            borderTopLeftRadius: 5,
+            borderTopRightRadius: 5,
+          }}
+        >
           {userData && (
-            <View>
+            <View
+              style={{
+               // backgroundColor: "gray",
+                //paddingVertical: 110,
+               // paddingHorizontal: 15,
+               // borderBottomLeftRadius: 5,
+              //  borderBottomRightRadius: 5,
+              }}
+            >
               <Text style={styles.buttonText1}> Hi {userData.firstName}</Text>
-              <Text style={styles.buttonText1}> You have made booking at:</Text>
+              <Text style={styles.buttonText1}> You have made a booking at:</Text>
             </View>
           )}
         </View>
@@ -129,7 +165,7 @@ const ConfirmBooking = ({ route }) => {
           }}
         >
           <Text style={styles.buttonText}>Date:</Text>
-          <Text style={styles.buttonText}>  {formattedDate}</Text>
+          <Text style={styles.buttonText}> {formattedDate}</Text>
         </View>
         <View
           style={{
@@ -142,7 +178,6 @@ const ConfirmBooking = ({ route }) => {
           <Text style={styles.buttonText}>Time:</Text>
           <Text style={styles.buttonText}> Time: {formattedTime}</Text>
         </View>
-        
       </View>
 
       <TouchableOpacity
@@ -163,35 +198,35 @@ const ConfirmBooking = ({ route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "white",
+    //  backgroundColor: "white",
   },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "white",
+  header: {},
+  userDetails: {
+    backgroundColor: "gray",
+    //paddingVertical: 110,
+    paddingHorizontal: 15,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
   },
+
   confirmButton: {
-     marginTop: 20,
+    marginTop: 20,
     // padding: 10,
-    backgroundColor: "white",
+    //backgroundColor: "white",
     borderRadius: 5,
     borderWidth: 1,
     height: 60,
     width: "90%",
-    display:'flex',
-    justifyContent:"center",
-    alignItems:'center'
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   buttonText1: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "white",
+    color: "black",
     paddingTop: 10,
-    paddingBottom: 30,
+    //paddingBottom: 30,
   },
   buttonText: {
     fontSize: 18,
@@ -205,16 +240,16 @@ const styles = StyleSheet.create({
   cart: {
     height: 200,
     width: "90%",
-    backgroundColor: "white",
+    // backgroundColor: "white",
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "grey",
+    borderColor: "black",
     border: 10,
   },
   SmallCart: {
     height: 50,
     width: "100%",
-    backgroundColor: "gray",
+    //backgroundColor: "gray",
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
   },
