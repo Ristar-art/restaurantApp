@@ -83,7 +83,7 @@ const AdminPanel = ({ navigation }) => {
           )}
         />
       </View>
-      <View
+      {/* <View
         style={{
           width: "100%",
           height: "10%",
@@ -106,7 +106,7 @@ const AdminPanel = ({ navigation }) => {
             Manage the Restaurant
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };
