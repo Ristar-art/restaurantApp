@@ -103,10 +103,10 @@ function CustomDrawerContent(props) {
         />
       )}
       {/* Add more DrawerItems for other navigation options as needed */}
-      <DrawerItem
+      {/* <DrawerItem
           label="Admin"
           onPress={() => props.navigation.navigate('Admin')} 
-        />
+        /> */}
     </DrawerContentScrollView>
    
   );
