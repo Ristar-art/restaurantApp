@@ -1,6 +1,6 @@
 # How the project works
 
-Command to star the app is:
+Command to start the app is:
 ```
 npm start
 ```
