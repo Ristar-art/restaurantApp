@@ -76,9 +76,9 @@ export default function Home({ navigation }) {
     return () => unsubscribe();
   }, [dispatch]);
 
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
+  // if (isLoading) {
+  //   return <Text>Loading...</Text>;
+  // }
 
   return (
     <View style={styles.container}>

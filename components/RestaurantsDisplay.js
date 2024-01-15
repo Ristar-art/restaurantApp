@@ -98,7 +98,8 @@ export default function RestaurantsDisplay() {
       {restaurantImage ? (
         <ImageBackground source={{ uri: restaurantImage }} style={styles.imageBackground} />
       ) : (
-        <Text>Loading background image...</Text>
+        // <Text>Loading background image...</Text>
+        <></>
       )}
       <FlatList
   data={restaurantData}

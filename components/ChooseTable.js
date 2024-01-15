@@ -92,9 +92,9 @@ const ChooseTable = () => {
     setShowTimePicker(true);  
   };
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
+  // if (loading) {
+  //   return <Text>Loading...</Text>;
+  // }
 
   return (
     <View
