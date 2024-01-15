@@ -138,7 +138,7 @@ const SignUpForm = ({ navigation }) => {
               />
             </View>
           </View>
-          {/* <View style={styles.formGroup}>
+          <View style={styles.formGroup}>
             <View style={styles.inputGroup}>
            
               <TextInput
@@ -148,7 +148,7 @@ const SignUpForm = ({ navigation }) => {
                 onChangeText={text => handleInputChange('role', text)}
               />
             </View>
-          </View> */}
+          </View>
           <View style={styles.formGroup}>
             <TouchableOpacity
               style={styles.signupButton}

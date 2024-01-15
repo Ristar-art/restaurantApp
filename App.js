@@ -96,13 +96,13 @@ function CustomDrawerContent(props) {
         label="Status"
         onPress={() => props.navigation.navigate('Status')} 
       />
-      {/* {canAccessAdminPanel && ( // Only show the Admin panel if the user's email matches the allowed email
+      {canAccessAdminPanel && ( // Only show the Admin panel if the user's email matches the allowed email
         <DrawerItem
           label="Admin"
           onPress={() => props.navigation.navigate('Admin')} 
         />
       )}
-      Add more DrawerItems for other navigation options as needed */}
+      {/* Add more DrawerItems for other navigation options as needed */}
       <DrawerItem
           label="Admin"
           onPress={() => props.navigation.navigate('Admin')} 
