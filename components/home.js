@@ -102,7 +102,7 @@ export default function Home({ navigation }) {
           flexWrap: "wrap",
          // backgroundColor:'grey'
         }}><Text style={{ fontSize: 25, marginLeft:20, }}>
-          Book a table from the best local restaurent
+          Book a table from the best local restaurents
         </Text></View>
         
         <TouchableOpacity
